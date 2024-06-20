@@ -1,4 +1,5 @@
 import express, { Application } from "express";
+import appRoutes from "./globals/routes/appRoutes";
 
 class Server {
   private app: Application;
@@ -18,7 +19,9 @@ class Server {
     this.app.use(express.json()); // req.body
   }
   
-  private setupRoutes(): void {}
+  private setupRoutes(): void {
+    appRoutes(this.app);
+  }
   private setupGlobalError(): void {}
 
   private startServer() {
