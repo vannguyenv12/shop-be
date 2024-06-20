@@ -1,4 +1,4 @@
-import { Application } from "express";
+import express, { Application } from "express";
 
 class Server {
   private app: Application;
@@ -7,7 +7,21 @@ class Server {
     this.app = app;
   }
 
-  public startServer() {
+  public start(): void {
+    this.setupMiddleware();
+    this.setupRoutes();
+    this.setupGlobalError();
+    this.startServer();
+  }
+
+  private setupMiddleware(): void {
+    this.app.use(express.json()); // req.body
+  }
+  
+  private setupRoutes(): void {}
+  private setupGlobalError(): void {}
+
+  private startServer() {
     const port = parseInt(process.env.PORT!) || 5050;
 
     this.app.listen(port, () => {

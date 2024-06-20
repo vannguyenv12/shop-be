@@ -6,7 +6,7 @@ class ShopApplication {
     const app: Application = express();
     const server: Server = new Server(app);
 
-    server.startServer();
+    server.start();
   }
 }
 
