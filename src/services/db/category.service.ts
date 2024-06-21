@@ -1,9 +1,10 @@
 import { Category } from "@prisma/client";
+import { ICategoryBody } from "~/features/category/interface/category.interface";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 
 class CategoryService {
-  public async add(requestBody: any): Promise<Category> {
+  public async add(requestBody: ICategoryBody): Promise<Category> {
     const { name, icon } = requestBody;
 
     const category: Category = await prisma.category.create({
@@ -41,7 +42,7 @@ class CategoryService {
 
   }
 
-  public async edit(id: number, requestBody: any) {
+  public async edit(id: number, requestBody: ICategoryBody) {
     const { name, icon } = requestBody;
 
     if (await this.getCountCategory(id) <= 0) {
