@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email String
@@ -26,8 +31,9 @@ model User {
   updatedAt DateTime @updatedAt
 }
 
-
-enum Role {
-  USER
-  ADMIN
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  icon String
+  status Boolean @default(true)
 }
