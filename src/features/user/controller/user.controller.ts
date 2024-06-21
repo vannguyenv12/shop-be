@@ -9,13 +9,6 @@ class UserController {
       email, password, firstName, lastName, avatar
     } = req.body;
 
-    const {error} = userSchemaCreate.validate(req.body);
-
-    if (error) {
-      console.log(error);
-      return;
-    }
-
     // Insert To DB
     const newUser: User = await prisma.user.create({
       data: {
