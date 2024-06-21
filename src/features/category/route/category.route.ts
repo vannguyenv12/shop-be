@@ -8,5 +8,6 @@ const categoryRoute = express.Router();
 categoryRoute.post('/', validateSchema(createCategorySchema), categoryController.create);
 categoryRoute.get('/', categoryController.getAll);
 categoryRoute.get('/:id', categoryController.get);
+categoryRoute.put('/:id', categoryController.update);
 
 export default categoryRoute;

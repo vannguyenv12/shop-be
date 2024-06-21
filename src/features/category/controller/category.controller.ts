@@ -30,6 +30,15 @@ class CategoryController {
     })
   }
 
+  public async update(req: Request, res: Response) {
+    const category = await categoryService.edit(parseInt(req.params.id), req.body);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Update category',
+      data: category
+    })
+  }
+
 }
 
 export const categoryController: CategoryController = new CategoryController();
