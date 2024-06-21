@@ -1,9 +1,10 @@
 import { User } from "@prisma/client";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
+import { BadRequestException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 
 class UserController {
-   public async createUser(req: Request, res: Response) {
+   public async createUser(req: Request, res: Response, next: NextFunction) {
     const {
       email, password, firstName, lastName, avatar
     } = req.body;
@@ -11,7 +12,7 @@ class UserController {
     const isEmailUnique = true;
 
     if (isEmailUnique) {
-      throw new Error('Email must be unique');
+      return next(new BadRequestException('Email must be unique'))
     }
 
     // {

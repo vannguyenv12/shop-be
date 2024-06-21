@@ -7,6 +7,14 @@ export abstract class CustomError extends Error {
   constructor(message: string) {
     super(message)
   }
+
+  public getErrorResponse() {
+    return {
+      status: this.status,
+      statusCode: this.statusCode,
+      message: this.message,
+    }
+  }
 }
 
 export class BadRequestException extends CustomError {

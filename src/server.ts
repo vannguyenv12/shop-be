@@ -1,5 +1,6 @@
-import express, { Application } from "express";
+import express, { Application, NextFunction, Request, Response } from "express";
 import appRoutes from "./globals/routes/appRoutes";
+import { CustomError } from "./globals/middlewares/error.middleware";
 
 class Server {
   private app: Application;
@@ -23,8 +24,14 @@ class Server {
     appRoutes(this.app);
   }
   private setupGlobalError(): void {
+    // Not Found
     this.app.all('*', (req, res, next) => {
       return res.status(404).json({message: `The url ${req.originalUrl} not found`});
+    })
+
+    // Global
+    this.app.use((error: CustomError, req: Request, res: Response, next: NextFunction) => {
+      return res.status(error.statusCode).json(error.getErrorResponse());
     })
   }
 
