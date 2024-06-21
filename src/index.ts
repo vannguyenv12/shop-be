@@ -1,4 +1,5 @@
 import express, { Application } from "express";
+import 'express-async-errors'
 import Server from "./server";
 
 class ShopApplication {
