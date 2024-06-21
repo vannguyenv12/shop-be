@@ -19,6 +19,9 @@ class UserController {
     res.status(201).json(newUser); // CREATED
   }
 
+  public async getMe(req: Request, res: Response, next: NextFunction) {
+
+  }
 
 }
 
