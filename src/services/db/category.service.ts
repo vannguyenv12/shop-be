@@ -62,10 +62,23 @@ class CategoryService {
     return updatedCategory
   }
 
+  public async remove(id: number) {
+    if (await this.getCountCategory(id) <= 0) {
+      throw new NotFoundException(`Category with ID: ${id} not found`);
+    }
+
+    await prisma.category.delete({
+      where: {
+        id,
+      }
+    });
+  }
+
   private async getCountCategory(id: number): Promise<number> {
     const count = await prisma.category.count({
       where: {
-        id
+        id,
+        status: true
       }
     });
 

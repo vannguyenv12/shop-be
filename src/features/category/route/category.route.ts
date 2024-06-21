@@ -9,5 +9,6 @@ categoryRoute.post('/', validateSchema(createCategorySchema), categoryController
 categoryRoute.get('/', categoryController.getAll);
 categoryRoute.get('/:id', categoryController.get);
 categoryRoute.put('/:id', categoryController.update);
+categoryRoute.delete('/:id', categoryController.delete);
 
 export default categoryRoute;

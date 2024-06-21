@@ -39,6 +39,14 @@ class CategoryController {
     })
   }
 
+  public async delete(req: Request, res: Response) {
+    await categoryService.remove(parseInt(req.params.id));
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Delete category',
+    })
+  }
+
 }
 
 export const categoryController: CategoryController = new CategoryController();
