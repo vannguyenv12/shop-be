@@ -1,3 +1,4 @@
+import { NextFunction, Request, Response } from "express";
 import { HTTP_STATUS } from "../constants/http";
 
 export abstract class CustomError extends Error {
@@ -53,4 +54,21 @@ export class NotFoundException extends CustomError {
   }
 }
 
+export class InternalException extends CustomError {
+  status: string = 'error';
+  statusCode: number = HTTP_STATUS.INTERNAL_SERVER_ERROR;
 
+  constructor(message: string) {
+    super(message)
+  }
+}
+
+export function asyncWrapper(callback: any) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await callback(req, res, next);
+    } catch (error: any) {
+      next(new InternalException(error.message));
+    }
+  }
+}
