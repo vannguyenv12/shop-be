@@ -13,6 +13,13 @@ class ProductImagesController {
       message: 'Add images to product'
     })
   }
+
+  public async delete(req: Request, res: Response) {
+    await productImagesService.remove(parseInt(req.params.id));
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Remove image'
+    })
+  }
 }
 
 export const productImagesController: ProductImagesController = new ProductImagesController();

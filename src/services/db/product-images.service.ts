@@ -3,7 +3,7 @@ import { Express } from "express";
 import { prisma } from "~/prisma";
 
 class ProductImagesService {
-  public async add(productId: number, files: Express.Multer.File[]) {
+  public async add(productId: number, files: Express.Multer.File[]): Promise<void> {
 
     const productImages: ProductImages[] = [];
 
@@ -16,6 +16,12 @@ class ProductImagesService {
 
     await prisma.productImages.createMany({
       data: productImages
+    })
+  }
+
+  public async remove(id: number): Promise<void> {
+    await prisma.productImages.delete({
+      where: { id }
     })
   }
 }
