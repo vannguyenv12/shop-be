@@ -7,15 +7,20 @@ const formatJoiMessage = (joiMessages: ValidationErrorItem[]) => {
 
 export const validateSchema = (schema: Schema) => {
   return (req: Request, res: Response, next: NextFunction) => {
-      const {error} = schema.validate(req.body, {abortEarly: false});
+    if (req.file) {
+      req.body.main_image = req.file.filename
+    }
 
-      if (error) {
-        const message = formatJoiMessage(error.details);
-        res.status(400).json({error: message});
-        return;
-      }
+    const { error } = schema.validate(req.body, { abortEarly: false });
 
-      next();
+
+    if (error) {
+      const message = formatJoiMessage(error.details);
+      res.status(400).json({ error: message });
+      return;
+    }
+
+    next();
   }
 }
 

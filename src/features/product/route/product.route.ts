@@ -7,7 +7,7 @@ import { upload } from '~/globals/helpers/upload';
 
 const productRoute = express.Router();
 
-productRoute.post('/', verifyUser, checkPermission('SHOP', 'ADMIN'), validateSchema(productSchema), upload.single('main_image'), productController.create);
+productRoute.post('/', verifyUser, checkPermission('SHOP', 'ADMIN'), upload.single('main_image'), validateSchema(productSchema), productController.create);
 productRoute.get('/', productController.read);
 productRoute.get('/:id', productController.readOne);
 productRoute.put('/:id', verifyUser, checkPermission('SHOP', 'ADMIN'), validateSchema(productSchema), productController.update);

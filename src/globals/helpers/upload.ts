@@ -3,9 +3,7 @@ import path from "node:path";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    // create uploadPath
     const uploadPath = path.join(__dirname, '../../../images', 'products');
-    console.log(uploadPath);
 
     cb(null, uploadPath)
   },

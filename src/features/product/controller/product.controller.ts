@@ -8,6 +8,7 @@ class ProductController {
     const product = await productService.add(req.body, req.currentUser, req.file);
 
 
+
     return res.status(HTTP_STATUS.CREATED).json({
       message: 'Created product',
       data: product

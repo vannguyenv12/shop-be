@@ -14,7 +14,7 @@ class ProductService {
     const product: Product = await prisma.product.create({
       data: {
         name, longDescription, shortDescription, quantity: parseInt(quantity),
-        main_image: mainImage?.filename ? mainImage.fieldname : '',
+        main_image: mainImage?.filename ? mainImage.filename : '',
         price: parseFloat(price),
         categoryId: parseInt(categoryId),
         shopId: currentUser.id
