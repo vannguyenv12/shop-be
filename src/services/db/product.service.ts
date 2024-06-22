@@ -53,6 +53,14 @@ class ProductService {
     const product: Product | null = await prisma.product.findFirst({
       where: {
         id
+      },
+      include: {
+        productImages: true,
+        productVariants: {
+          include: {
+            productVariantItems: true
+          }
+        }
       }
     });
 
