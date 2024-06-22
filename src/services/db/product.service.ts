@@ -5,12 +5,14 @@ import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 
 class ProductService {
-  public async add(requestBody: IProductBody): Promise<Product> {
+  public async add(requestBody: IProductBody, currentUser: UserPayload): Promise<Product> {
     const { name, longDescription, shortDescription, quantity, main_image, categoryId } = requestBody;
+
+    // Check permission, NORMAL USER cannot create product
 
     const product: Product = await prisma.product.create({
       data: {
-        name, longDescription, shortDescription, quantity, main_image, categoryId
+        name, longDescription, shortDescription, quantity, main_image, categoryId, shopId: currentUser.id
       }
     });
 

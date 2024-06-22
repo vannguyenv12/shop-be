@@ -22,7 +22,7 @@ class AuthService {
 
     // Create JWT
     const payload = {
-      email, firstName, lastName, avatar, role: newUser.role
+      id: newUser.id, email, firstName, lastName, avatar, role: newUser.role
     }
 
     const accessToken: string = this.generateJWT(payload);
@@ -45,6 +45,7 @@ class AuthService {
     // 4) Generate JWT -> Access Token
 
     const payload = {
+      id: user.id,
       email: user.email, firstName: user.firstName,
       lastName: user.lastName, avatar: user.avatar, role: user.role
     }

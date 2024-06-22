@@ -2,10 +2,11 @@ import express from 'express';
 import { validateSchema } from '~/globals/middlewares/validate.middleware';
 import { productController } from '../controller/product.controller';
 import { productSchema } from '../schema/product.schema';
+import { checkPermission, verifyUser } from '~/globals/middlewares/auth.middleware';
 
 const productRoute = express.Router();
 
-productRoute.post('/', validateSchema(productSchema), productController.create);
+productRoute.post('/', verifyUser, checkPermission('SHOP', 'ADMIN'), validateSchema(productSchema), productController.create);
 productRoute.get('/', productController.read);
 productRoute.get('/:id', productController.readOne);
 productRoute.put('/:id', validateSchema(productSchema), productController.update);

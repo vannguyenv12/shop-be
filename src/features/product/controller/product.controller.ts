@@ -5,7 +5,9 @@ import { productService } from "~/services/db/product.service";
 
 class ProductController {
   public async create(req: Request, res: Response) {
-    const product = await productService.add(req.body);
+
+
+    const product = await productService.add(req.body, req.currentUser);
 
     return res.status(HTTP_STATUS.CREATED).json({
       message: 'Created product',

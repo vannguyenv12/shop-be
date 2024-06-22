@@ -5,6 +5,7 @@ declare namespace Express {
 }
 
 interface UserPayload {
+  id: number;
   email: string;
   firstName: string;
   lastName: string;

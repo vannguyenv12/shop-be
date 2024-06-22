@@ -25,3 +25,13 @@ export function checkUserAuthenticated(req: Request, res: Response, next: NextFu
 
   next();
 }
+
+export function checkPermission(...roles: string[]) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!roles.includes(req.currentUser.role)) {
+      throw new ForbiddenException('You cannot perform this action')
+    }
+
+    next();
+  }
+}
