@@ -3,9 +3,10 @@ import { prisma } from "~/prisma";
 import { productService } from "./product.service";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { Helper } from "~/globals/helpers/helper";
+import { IProductVariantBody } from "~/features/product-variant/interface/product-variant.interface";
 
 class ProductVariantService {
-  public async add(productId: number, requestBody: any, currentUser: UserPayload): Promise<ProductVariant> {
+  public async add(productId: number, requestBody: IProductVariantBody, currentUser: UserPayload): Promise<ProductVariant> {
     const { name } = requestBody;
 
     const currentProduct: Product | null = await productService.getProduct(productId);
