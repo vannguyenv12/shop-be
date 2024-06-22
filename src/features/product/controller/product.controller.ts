@@ -13,7 +13,12 @@ class ProductController {
   }
 
   public async read(req: Request, res: Response) {
-    const products = await productService.get();
+    // const products = await productService.get();
+
+    const page = parseInt(req.query.page as string);
+    const pageSize = parseInt(req.query.pageSize as string);
+
+    const products = await productService.getPagination(page, pageSize);
 
     return res.status(HTTP_STATUS.OK).json({
       message: 'Get all products',

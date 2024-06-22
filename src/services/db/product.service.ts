@@ -21,6 +21,19 @@ class ProductService {
     return products;
   }
 
+  public async getPagination(page: number = 1, pageSize: number = 5) {
+    // page 1, every page has 5 products
+    const skip: number = (page - 1) * pageSize; // (3 - 1) * 10 = 20
+    const take: number = pageSize;
+
+    const products: Product[] = await prisma.product.findMany({
+      skip,
+      take
+    });
+
+    return products;
+  }
+
   public async getOne(id: number): Promise<Product> {
     const product: Product | null = await prisma.product.findFirst({
       where: {
