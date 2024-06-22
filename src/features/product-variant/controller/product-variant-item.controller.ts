@@ -13,6 +13,18 @@ class ProductVariantItemController {
       data: variantItem
     })
   }
+
+  public async delete(req: Request, res: Response) {
+    const productId = parseInt(req.params.productId);
+    const variantId = parseInt(req.params.variantId);
+    const variantItemId = parseInt(req.params.variantItemId);
+
+    await productVariantItemsService.remove(productId, variantId, variantItemId, req.currentUser);
+
+    return res.status(HTTP_STATUS.CREATED).json({
+      message: 'Remove variant item',
+    })
+  }
 }
 
 export const productVariantItemController: ProductVariantItemController = new ProductVariantItemController();

@@ -13,7 +13,14 @@ class ProductVariantItemsService {
     });
 
     return variantItem;
+  }
 
+  public async remove(productId: number, variantId: number, variantItemId: number, currentUser: UserPayload) {
+    await prisma.productVariantItem.delete({
+      where: {
+        id: variantItemId
+      }
+    })
   }
 }
 
