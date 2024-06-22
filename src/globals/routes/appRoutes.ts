@@ -6,6 +6,7 @@ import productVariantRoute from "~/features/product-variant/route/product-varian
 import productRoute from "~/features/product/route/product.route";
 import authRoute from "~/features/user/route/auth.route";
 import userRoute from "~/features/user/route/user.route";
+import wishlistRoute from "~/features/wishlist/route/wishlist.route";
 
 const appRoutes = (app: Application) => {
   app.use('/api/v1/users', userRoute);
@@ -15,6 +16,7 @@ const appRoutes = (app: Application) => {
   app.use('/api/v1/product-images', productImagesRoute);
   app.use('/api/v1/product-variants', productVariantRoute);
   app.use('/api/v1/product-variant-items', productVariantItemRoute);
+  app.use('/api/v1/wishlists', wishlistRoute);
 
 }
 

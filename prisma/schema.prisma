@@ -28,7 +28,7 @@ model User {
   avatar String
   role Role @default(USER)
   products Product[]
-  wishlists Wishlish[]
+  wishlists Wishlist[]
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,7 +56,7 @@ model Product {
   shop User? @relation(fields: [shopId], references: [id])
   shopId Int?
 
-  wishlists Wishlish[]
+  wishlists Wishlist[]
 
   productImages ProductImages[]
   productVariants ProductVariant[]
@@ -88,7 +88,7 @@ model ProductVariantItem {
   variantId Int
 }
 
-model Wishlish {
+model Wishlist {
   userId Int
   productId Int
 
