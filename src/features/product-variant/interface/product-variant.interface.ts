@@ -7,7 +7,3 @@ export interface IProductVariantBody {
 export interface IProductVariant extends ProductVariant {
   productVariantItems: ProductVariantItem[]
 }
-
-export interface IProduct extends Product {
-  productVariants: ProductVariant[]
-}
