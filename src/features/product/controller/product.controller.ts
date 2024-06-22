@@ -74,6 +74,15 @@ class ProductController {
       message: 'Delete product'
     })
   }
+
+  public async readMyProducts(req: Request, res: Response) {
+    const products = await productService.getMyProduct(req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Get my products',
+      data: products
+    })
+  }
 }
 
 export const productController: ProductController = new ProductController();

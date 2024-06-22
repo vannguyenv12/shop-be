@@ -97,6 +97,19 @@ class ProductService {
     })
   }
 
+  public async getMyProduct(currentUser: UserPayload) {
+    const products = await prisma.user.findMany({
+      where: {
+        id: currentUser.id
+      },
+      include: {
+        products: true
+      }
+    });
+
+    return products
+  }
+
   private async getProduct(id: number): Promise<Product | null> {
     const product: Product | null = await prisma.product.findFirst({
       where: { id }
