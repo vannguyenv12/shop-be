@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { HTTP_STATUS } from "~/globals/constants/http";
+import { UtilsConstant } from "~/globals/constants/utils";
 import { productService } from "~/services/db/product.service";
 
 class ProductController {
@@ -15,10 +16,35 @@ class ProductController {
   public async read(req: Request, res: Response) {
     // const products = await productService.get();
 
-    const page = parseInt(req.query.page as string);
-    const pageSize = parseInt(req.query.pageSize as string);
+    const page = parseInt(req.query.page as string) || UtilsConstant.DEFAULT_PAGE;
+    const pageSize = parseInt(req.query.pageSize as string) || UtilsConstant.DEFAULT_PAGE_SIZE;
+    const sortBy = req.query.sortBy as string || UtilsConstant.DEFAULT_SORT_BY;
+    const sortDir = req.query.sortDir as string || UtilsConstant.DEFAULT_SORT_DIR;
 
-    const products = await productService.getPagination(page, pageSize);
+    // where: {
+    //   quantity: {
+    //     lte: 9
+    //   }
+    // }
+
+    const where: any = {};
+    const filterBy: string = req.query.filterBy as string;
+    const filterValueParams: string = req.query.filterValue as string;
+    const [filterCondition, filterValue] = filterValueParams.split('.');
+
+    const operations = ['lt', 'lte', 'gt', 'gte'];
+    if (filterCondition === 'eq') {
+      where[filterBy] = parseInt(filterValue)
+    }
+    operations.forEach(operation => {
+      if (filterCondition === operation) {
+        console.log({ filterBy, filterCondition, filterValue });
+        where[filterBy] = {};
+        where[filterBy][filterCondition] = parseInt(filterValue);
+      }
+    })
+
+    const products = await productService.getPagination(page, pageSize, sortBy, sortDir, where);
 
     return res.status(HTTP_STATUS.OK).json({
       message: 'Get all products',

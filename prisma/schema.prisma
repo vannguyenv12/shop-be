@@ -45,7 +45,10 @@ model Product {
   longDescription String @db.Text
   shortDescription String
   quantity Int
+  price Float @default(0)
   main_image String
   category Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt @default(now())
 }
