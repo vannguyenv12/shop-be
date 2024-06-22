@@ -28,6 +28,7 @@ model User {
   avatar String
   role Role @default(USER)
   products Product[]
+  wishlists Wishlish[]
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -54,6 +55,8 @@ model Product {
 
   shop User? @relation(fields: [shopId], references: [id])
   shopId Int?
+
+  wishlists Wishlish[]
 
   productImages ProductImages[]
   productVariants ProductVariant[]
@@ -83,4 +86,14 @@ model ProductVariantItem {
   name String
   productVariant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
   variantId Int
+}
+
+model Wishlish {
+  userId Int
+  productId Int
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([userId, productId])
 }
