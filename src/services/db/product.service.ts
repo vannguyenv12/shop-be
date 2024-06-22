@@ -1,4 +1,5 @@
 import { Product } from "@prisma/client";
+import { Express } from "express";
 import { IProductBody } from "~/features/product/interface/product.interface";
 import { UtilsConstant } from "~/globals/constants/utils";
 import { Helper } from "~/globals/helpers/helper";
@@ -7,12 +8,16 @@ import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 
 class ProductService {
-  public async add(requestBody: IProductBody, currentUser: UserPayload): Promise<Product> {
-    const { name, longDescription, shortDescription, quantity, main_image, categoryId } = requestBody;
+  public async add(requestBody: IProductBody, currentUser: UserPayload, mainImage: Express.Multer.File | undefined): Promise<Product> {
+    const { name, longDescription, shortDescription, quantity, categoryId, price } = requestBody;
 
     const product: Product = await prisma.product.create({
       data: {
-        name, longDescription, shortDescription, quantity, main_image, categoryId, shopId: currentUser.id
+        name, longDescription, shortDescription, quantity: parseInt(quantity),
+        main_image: mainImage?.filename ? mainImage.fieldname : '',
+        price: parseFloat(price),
+        categoryId: parseInt(categoryId),
+        shopId: currentUser.id
       }
     });
 
@@ -59,7 +64,7 @@ class ProductService {
   }
 
   public async edit(id: number, requestBody: IProductBody, currentUser: UserPayload): Promise<Product> {
-    const { name, longDescription, shortDescription, quantity, main_image, categoryId } = requestBody;
+    const { name, longDescription, shortDescription, quantity, main_image, categoryId, price } = requestBody;
 
     if (await this.getCountProduct(id) <= 0) {
       throw new NotFoundException(`Product has ID: ${id} not found`)
@@ -72,7 +77,7 @@ class ProductService {
     const product = await prisma.product.update({
       where: { id },
       data: {
-        name, longDescription, shortDescription, quantity, main_image, categoryId
+        name, longDescription, shortDescription, quantity: parseInt(quantity), main_image, categoryId: parseInt(categoryId), price: parseFloat(price)
       }
     });
 

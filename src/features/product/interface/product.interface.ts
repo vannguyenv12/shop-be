@@ -2,7 +2,8 @@ export interface IProductBody {
   name: string,
   longDescription: string,
   shortDescription: string,
-  quantity: number,
+  quantity: string,
+  price: string;
   main_image: string,
-  categoryId: number
+  categoryId: string
 }
