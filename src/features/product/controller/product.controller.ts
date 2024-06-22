@@ -21,12 +21,6 @@ class ProductController {
     const sortBy = req.query.sortBy as string || UtilsConstant.DEFAULT_SORT_BY;
     const sortDir = req.query.sortDir as string || UtilsConstant.DEFAULT_SORT_DIR;
 
-    // where: {
-    //   quantity: {
-    //     lte: 9
-    //   }
-    // }
-
     const where: any = {};
     const filterBy: string = req.query.filterBy as string;
     const filterValueParams: string = req.query.filterValue as string;

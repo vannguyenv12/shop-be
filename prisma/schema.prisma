@@ -16,6 +16,7 @@ datasource db {
 enum Role {
   USER
   ADMIN
+  SHOP
 }
 
 model User {
@@ -26,6 +27,7 @@ model User {
   lastName String
   avatar String
   role Role @default(USER)
+  products Product[]
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -49,6 +51,10 @@ model Product {
   main_image String
   category Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+
+  shop User? @relation(fields: [shopId], references: [id])
+  shopId Int?
+
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt @default(now())
 }
