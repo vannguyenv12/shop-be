@@ -1,6 +1,6 @@
-class ProductVariantItem {
+class ProductVariantItemController {
 
 }
 
-export const productVariantItem: ProductVariantItem = new ProductVariantItem();
+export const productVariantItemController: ProductVariantItemController = new ProductVariantItemController();
 
