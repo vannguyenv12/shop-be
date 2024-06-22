@@ -36,4 +36,16 @@ model Category {
   name String
   icon String
   status Boolean @default(true)
+  products Product[]
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  name String
+  longDescription String @db.Text
+  shortDescription String
+  quantity Int
+  main_image String
+  category Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
 }
