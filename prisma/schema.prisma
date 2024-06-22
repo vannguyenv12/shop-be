@@ -56,6 +56,7 @@ model Product {
   shopId Int?
 
   productImages ProductImages[]
+  productVariants ProductVariant[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt @default(now())
@@ -66,4 +67,20 @@ model ProductImages {
   image String
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
+}
+
+model ProductVariant {
+  id Int @id @default(autoincrement())
+  name String
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+
+  productVariantItems ProductVariantItem[]
+}
+
+model ProductVariantItem {
+  id Int @id @default(autoincrement())
+  name String
+  productVariant ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  variantId Int
 }
