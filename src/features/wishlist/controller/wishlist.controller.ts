@@ -14,8 +14,17 @@ class WishlistController {
   public async delete(req: Request, res: Response) {
     await wishlistService.remove(parseInt(req.params.productId), req.currentUser);
 
-    return res.status(HTTP_STATUS.CREATED).json({
+    return res.status(HTTP_STATUS.OK).json({
       message: 'Product was removed form wishlist'
+    })
+  }
+
+  public async read(req: Request, res: Response) {
+    const wishlists = await wishlistService.get(req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Get my wishlist',
+      data: wishlists
     })
   }
 }

@@ -60,6 +60,19 @@ class WishlistService {
 
     return count;
   }
+
+  public async get(currentUser: UserPayload): Promise<Wishlist[]> {
+    const wishlist: Wishlist[] = await prisma.wishlist.findMany({
+      where: {
+        userId: currentUser.id,
+      },
+      include: {
+        product: true,
+      }
+    });
+
+    return wishlist;
+  }
 }
 
 export const wishlistService: WishlistService = new WishlistService();
