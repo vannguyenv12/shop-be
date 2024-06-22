@@ -3,7 +3,7 @@ import { prisma } from "~/prisma";
 import { productService } from "./product.service";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { Helper } from "~/globals/helpers/helper";
-import { IProductVariantBody } from "~/features/product-variant/interface/product-variant.interface";
+import { IProduct, IProductVariantBody } from "~/features/product-variant/interface/product-variant.interface";
 
 class ProductVariantService {
   public async add(productId: number, requestBody: IProductVariantBody, currentUser: UserPayload): Promise<ProductVariant> {
@@ -34,14 +34,25 @@ class ProductVariantService {
     if (!currentProduct) {
       throw new NotFoundException(`Product has ID: ${productId} does not exist`);
     }
-
     Helper.checkPermission(currentProduct!, currentUser);
+
+    const product: IProduct | null = await prisma.product.findFirst({
+      where: { id: productId },
+      include: {
+        productVariants: true
+      }
+    })
+
+    const index = product!.productVariants.findIndex((variant: ProductVariant) => variant.id === variantId);
+
+    if (index <= -1) {
+      throw new NotFoundException(`Product variant has ID: ${variantId} does not exist`);
+
+    }
 
     await prisma.productVariant.delete({
       where: { id: variantId }
     });
-
-
   }
 }
 
