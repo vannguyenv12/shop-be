@@ -59,7 +59,7 @@ class ProductController {
   }
 
   public async update(req: Request, res: Response) {
-    const product = await productService.edit(parseInt(req.params.id), req.body);
+    const product = await productService.edit(parseInt(req.params.id), req.body, req.currentUser);
 
     return res.status(HTTP_STATUS.OK).json({
       message: 'Update product',
@@ -68,7 +68,7 @@ class ProductController {
   }
 
   public async delete(req: Request, res: Response) {
-    await productService.remove(parseInt(req.params.id));
+    await productService.remove(parseInt(req.params.id), req.currentUser);
 
     return res.status(HTTP_STATUS.OK).json({
       message: 'Delete product'

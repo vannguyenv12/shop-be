@@ -1,14 +1,14 @@
 import { Product } from "@prisma/client";
 import { IProductBody } from "~/features/product/interface/product.interface";
 import { UtilsConstant } from "~/globals/constants/utils";
+import { Helper } from "~/globals/helpers/helper";
+import { checkPermission } from "~/globals/middlewares/auth.middleware";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 
 class ProductService {
   public async add(requestBody: IProductBody, currentUser: UserPayload): Promise<Product> {
     const { name, longDescription, shortDescription, quantity, main_image, categoryId } = requestBody;
-
-    // Check permission, NORMAL USER cannot create product
 
     const product: Product = await prisma.product.create({
       data: {
@@ -58,12 +58,16 @@ class ProductService {
     return product;
   }
 
-  public async edit(id: number, requestBody: IProductBody): Promise<Product> {
+  public async edit(id: number, requestBody: IProductBody, currentUser: UserPayload): Promise<Product> {
     const { name, longDescription, shortDescription, quantity, main_image, categoryId } = requestBody;
 
     if (await this.getCountProduct(id) <= 0) {
       throw new NotFoundException(`Product has ID: ${id} not found`)
     }
+
+    const currentProduct = await this.getProduct(id);
+    Helper.checkPermission(currentProduct!, currentUser);
+
 
     const product = await prisma.product.update({
       where: { id },
@@ -75,14 +79,27 @@ class ProductService {
     return product;
   }
 
-  public async remove(id: number) {
+  public async remove(id: number, currentUser: UserPayload) {
     if (await this.getCountProduct(id) <= 0) {
       throw new NotFoundException(`Product has ID: ${id} not found`)
     }
 
+    const currentProduct = await this.getProduct(id);
+    Helper.checkPermission(currentProduct!, currentUser);
+
     await prisma.product.delete({
       where: { id }
     })
+  }
+
+  private async getProduct(id: number): Promise<Product | null> {
+    const product: Product | null = await prisma.product.findFirst({
+      where: { id }
+    })
+
+    if (!product) return null;
+
+    return product;
   }
 
   private async getCountProduct(id: number): Promise<number> {
