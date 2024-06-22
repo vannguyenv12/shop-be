@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { HTTP_STATUS } from "../constants/http";
 
+export interface IError {
+  status: string;
+  statusCode: number;
+  message: string;
+}
+
 export abstract class CustomError extends Error {
   abstract status: string;
   abstract statusCode: number;

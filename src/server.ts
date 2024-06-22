@@ -1,6 +1,6 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import appRoutes from "./globals/routes/appRoutes";
-import { CustomError, NotFoundException } from "./globals/middlewares/error.middleware";
+import { CustomError, IError, NotFoundException } from "./globals/middlewares/error.middleware";
 
 class Server {
   private app: Application;
@@ -30,8 +30,11 @@ class Server {
     })
 
     // Global
-    this.app.use((error: CustomError, req: Request, res: Response, next: NextFunction) => {
-      return res.status(error.statusCode).json(error.getErrorResponse());
+    this.app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
+      console.log('check error: ', error);
+      if (error instanceof CustomError) {
+        return res.status(error.statusCode).json(error.getErrorResponse());
+      }
     })
   }
 
