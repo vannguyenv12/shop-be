@@ -10,6 +10,14 @@ class WishlistController {
       message: 'Add product to wishlist successfully'
     })
   }
+
+  public async delete(req: Request, res: Response) {
+    await wishlistService.remove(parseInt(req.params.productId), req.currentUser);
+
+    return res.status(HTTP_STATUS.CREATED).json({
+      message: 'Product was removed form wishlist'
+    })
+  }
 }
 
 export const wishlistController: WishlistController = new WishlistController();

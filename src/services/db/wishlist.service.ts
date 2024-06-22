@@ -1,6 +1,6 @@
 import { Wishlist } from "@prisma/client";
 import { IWishlistBody } from "~/features/wishlist/interface/wishlist.interface";
-import { BadRequestException } from "~/globals/middlewares/error.middleware";
+import { BadRequestException, NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 
 class WishlistService {
@@ -23,6 +23,22 @@ class WishlistService {
     })
   }
 
+  public async remove(productId: number, currentUser: UserPayload) {
+    if (await this.getCountWishlist(productId, currentUser.id) <= 0) {
+      throw new NotFoundException(`Product in wishlist not found`);
+    }
+
+    await prisma.wishlist.delete({
+      where: {
+        userId_productId: {
+          productId,
+          userId: currentUser.id
+        }
+      }
+    });
+
+  }
+
   private async getWishlist(productId: number, userId: number): Promise<Wishlist | null> {
     const wishlist: Wishlist | null = await prisma.wishlist.findFirst({
       where: {
@@ -32,6 +48,17 @@ class WishlistService {
     });
 
     return wishlist
+  }
+
+  private async getCountWishlist(productId: number, userId: number): Promise<number> {
+    const count: number = await prisma.wishlist.count({
+      where: {
+        productId,
+        userId,
+      }
+    });
+
+    return count;
   }
 }
 
