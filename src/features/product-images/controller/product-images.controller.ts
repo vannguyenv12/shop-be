@@ -7,7 +7,7 @@ class ProductImagesController {
     const productId: number = parseInt(req.params.productId);
 
     const files = req.files as Express.Multer.File[];
-    await productImagesService.add(productId, files);
+    await productImagesService.add(productId, req.currentUser, files);
 
     return res.status(HTTP_STATUS.CREATED).json({
       message: 'Add images to product'
@@ -15,7 +15,7 @@ class ProductImagesController {
   }
 
   public async delete(req: Request, res: Response) {
-    await productImagesService.remove(parseInt(req.params.id));
+    await productImagesService.remove(parseInt(req.params.productId), parseInt(req.params.imageId), req.currentUser);
     return res.status(HTTP_STATUS.OK).json({
       message: 'Remove image'
     })

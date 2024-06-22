@@ -1,9 +1,21 @@
-import { ProductImages } from "@prisma/client";
+import { Product, ProductImages } from "@prisma/client";
 import { Express } from "express";
 import { prisma } from "~/prisma";
+import { productService } from "./product.service";
+import { NotFoundException } from "~/globals/middlewares/error.middleware";
+import { Helper } from "~/globals/helpers/helper";
 
 class ProductImagesService {
-  public async add(productId: number, files: Express.Multer.File[]): Promise<void> {
+  public async add(productId: number, currentUser: UserPayload, files: Express.Multer.File[]): Promise<void> {
+
+    // ADMIN, SHOP (owner)
+    const currentProduct: Product | null = await productService.getProduct(productId);
+
+    if (!currentProduct) {
+      throw new NotFoundException(`Product has ID: ${productId} does not exist`);
+    }
+
+    Helper.checkPermission(currentProduct!, currentUser);
 
     const productImages: ProductImages[] = [];
 
@@ -19,9 +31,19 @@ class ProductImagesService {
     })
   }
 
-  public async remove(id: number): Promise<void> {
+  public async remove(productId: number, imageId: number, currentUser: UserPayload): Promise<void> {
+
+    // ADMIN, SHOP (owner)
+    const currentProduct: Product | null = await productService.getProduct(productId);
+
+    if (!currentProduct) {
+      throw new NotFoundException(`Product has ID: ${productId} does not exist`);
+    }
+
+    Helper.checkPermission(currentProduct!, currentUser);
+
     await prisma.productImages.delete({
-      where: { id }
+      where: { id: imageId }
     })
   }
 }

@@ -110,7 +110,7 @@ class ProductService {
     return products
   }
 
-  private async getProduct(id: number): Promise<Product | null> {
+  public async getProduct(id: number): Promise<Product | null> {
     const product: Product | null = await prisma.product.findFirst({
       where: { id }
     })
