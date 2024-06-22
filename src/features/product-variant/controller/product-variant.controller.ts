@@ -11,6 +11,14 @@ class ProductVariantController {
       data: variant
     })
   }
+
+  public async delete(req: Request, res: Response) {
+    await productVariantService.remove(parseInt(req.params.productId), parseInt(req.params.variantId));
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Delete product variant'
+    })
+  }
 }
 
 export const productVariantController: ProductVariantController = new ProductVariantController();

@@ -14,6 +14,14 @@ class ProductVariantService {
 
     return variant
   }
+
+  public async remove(productId: number, variantId: number) {
+    await prisma.productVariant.delete({
+      where: { id: variantId }
+    });
+
+
+  }
 }
 
 export const productVariantService: ProductVariantService = new ProductVariantService();
