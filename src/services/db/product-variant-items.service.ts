@@ -1,4 +1,5 @@
-import { ProductVariantItem } from "@prisma/client";
+import { ProductVariant, ProductVariantItem } from "@prisma/client";
+import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma"
 
 class ProductVariantItemsService {
@@ -16,10 +17,29 @@ class ProductVariantItemsService {
   }
 
   public async remove(productId: number, variantId: number, variantItemId: number, currentUser: UserPayload) {
-    await prisma.productVariantItem.delete({
+
+    const variant: any | null = await prisma.productVariant.findFirst({
       where: {
-        id: variantItemId
+        id: variantId
+      },
+      include: {
+        productVariantItems: true,
       }
+    });
+
+    if (!variant) {
+      throw new NotFoundException(`Product variant ID: ${variantId} not found`)
+
+    }
+
+    const index = variant.productVariantItems.findIndex((item: any) => item.id === variantItemId);
+
+    if (index <= -1) {
+      throw new NotFoundException(`Product variant item ID: ${variantItemId} not found`);
+    }
+
+    await prisma.productVariantItem.delete({
+      where: { id: variantItemId }
     })
   }
 }
