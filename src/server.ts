@@ -1,6 +1,7 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import appRoutes from "./globals/routes/appRoutes";
 import { CustomError, IError, NotFoundException } from "./globals/middlewares/error.middleware";
+import { HTTP_STATUS } from "./globals/constants/http";
 
 class Server {
   private app: Application;
@@ -35,6 +36,8 @@ class Server {
       if (error instanceof CustomError) {
         return res.status(error.statusCode).json(error.getErrorResponse());
       }
+
+      return res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error })
     })
   }
 
