@@ -1,10 +1,11 @@
 import { Address } from "@prisma/client";
+import { IAddressBody } from "~/features/address/interface/address.interface";
 import { Helper } from "~/globals/helpers/helper";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 
 class AddressService {
-  public async add(requestBody: any, currentUser: UserPayload) {
+  public async add(requestBody: IAddressBody, currentUser: UserPayload) {
     const { street, province, country, postalCode } = requestBody;
 
     const address: Address = await prisma.address.create({
@@ -16,7 +17,7 @@ class AddressService {
     return address;
   }
 
-  public async update(id: number, requestBody: any, currentUser: UserPayload): Promise<Address> {
+  public async update(id: number, requestBody: IAddressBody, currentUser: UserPayload): Promise<Address> {
     const { street, province, country, postalCode } = requestBody;
 
     // 1) Make sure the address exist
