@@ -19,6 +19,15 @@ class AddressController {
       message: 'Delete address'
     })
   }
+
+  public async getMyAddress(req: Request, res: Response) {
+    const addresses = await addressService.getAll(req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Get my address',
+      data: addresses
+    })
+  }
 }
 
 export const addressController: AddressController = new AddressController();

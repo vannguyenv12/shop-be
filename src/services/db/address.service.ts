@@ -31,6 +31,14 @@ class AddressService {
     })
   }
 
+  public async getAll(currentUser: UserPayload): Promise<Address[]> {
+    const addresses: Address[] = await prisma.address.findMany({
+      where: { userId: currentUser.id }
+    });
+
+    return addresses
+  }
+
   private async getOne(id: number): Promise<Address | null> {
     const address = await prisma.address.findFirst({
       where: { id }
