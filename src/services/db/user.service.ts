@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import { authService } from "./auth.service";
 import { BadRequestException, ForbiddenException, NotFoundException } from "~/globals/middlewares/error.middleware";
 import { IUserCreateBody, IUserUpdateBody, IUserUpdatePasswordBody } from "~/features/user/interface/user.interface";
+import { Express } from "express";
 
 class UserService {
   public async add(requestBody: IUserCreateBody) {
@@ -88,6 +89,19 @@ class UserService {
     await prisma.user.update({
       where: { id },
       data: { isActive: false }
+    })
+  }
+
+  public async editAvatar(file: Express.Multer.File | undefined, currentUser: UserPayload) {
+    if (!file) {
+      throw new BadRequestException('Please provide image');
+    }
+
+    await prisma.user.update({
+      where: { id: currentUser.id },
+      data: {
+        avatar: file.filename
+      }
     })
   }
 
