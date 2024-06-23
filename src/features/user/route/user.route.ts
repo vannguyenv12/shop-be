@@ -7,9 +7,12 @@ import { checkPermission, preventInActiveUser, verifyUser } from '~/globals/midd
 
 const userRoute = express.Router();
 
-userRoute.post('/', verifyUser, checkPermission('ADMIN'), validateSchema(userSchemaCreate), userController.createUser);
-userRoute.put('/:id', verifyUser, validateSchema(userSchemaUpdate), userController.update);
-userRoute.delete('/:id', verifyUser, preventInActiveUser, userController.delete);
-userRoute.get('/me', verifyUser, userController.getMe);
+userRoute.use(verifyUser)
+userRoute.use(preventInActiveUser)
+
+userRoute.post('/', checkPermission('ADMIN'), validateSchema(userSchemaCreate), userController.createUser);
+userRoute.put('/:id', validateSchema(userSchemaUpdate), userController.update);
+userRoute.delete('/:id', userController.delete);
+userRoute.get('/me', userController.getMe);
 
 export default userRoute;

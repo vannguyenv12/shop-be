@@ -5,8 +5,11 @@ import { checkPermission, verifyUser } from '~/globals/middlewares/auth.middlewa
 
 const productImagesRoute = express.Router();
 
-productImagesRoute.post('/:productId', verifyUser, checkPermission('ADMIN', 'SHOP'), upload.array('images', 10), productImagesController.addImages);
-productImagesRoute.delete('/:productId/:imageId', verifyUser, checkPermission('ADMIN', 'SHOP'), productImagesController.delete);
+productImagesRoute.use(verifyUser);
+productImagesRoute.use(checkPermission('ADMIN', 'SHOP'));
+
+productImagesRoute.post('/:productId', upload.array('images', 10), productImagesController.addImages);
+productImagesRoute.delete('/:productId/:imageId', productImagesController.delete);
 
 
 export default productImagesRoute;

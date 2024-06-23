@@ -26,19 +26,22 @@ class ProductController {
     const where: any = {};
     const filterBy: string = req.query.filterBy as string;
     const filterValueParams: string = req.query.filterValue as string;
-    const [filterCondition, filterValue] = filterValueParams.split('.');
 
-    const operations = ['lt', 'lte', 'gt', 'gte'];
-    if (filterCondition === 'eq') {
-      where[filterBy] = parseInt(filterValue)
-    }
-    operations.forEach(operation => {
-      if (filterCondition === operation) {
-        console.log({ filterBy, filterCondition, filterValue });
-        where[filterBy] = {};
-        where[filterBy][filterCondition] = parseInt(filterValue);
+    if (filterValueParams) {
+      const [filterCondition, filterValue] = filterValueParams.split('.');
+
+      const operations = ['lt', 'lte', 'gt', 'gte'];
+      if (filterCondition === 'eq') {
+        where[filterBy] = parseInt(filterValue)
       }
-    })
+      operations.forEach(operation => {
+        if (filterCondition === operation) {
+          console.log({ filterBy, filterCondition, filterValue });
+          where[filterBy] = {};
+          where[filterBy][filterCondition] = parseInt(filterValue);
+        }
+      })
+    }
 
     const products = await productService.getPagination(page, pageSize, sortBy, sortDir, where);
 

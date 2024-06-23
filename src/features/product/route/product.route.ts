@@ -2,16 +2,24 @@ import express from 'express';
 import { validateSchema } from '~/globals/middlewares/validate.middleware';
 import { productController } from '../controller/product.controller';
 import { productSchema } from '../schema/product.schema';
-import { checkPermission, verifyUser } from '~/globals/middlewares/auth.middleware';
+import { checkPermission, preventInActiveUser, verifyUser } from '~/globals/middlewares/auth.middleware';
 import { upload } from '~/globals/helpers/upload';
 
 const productRoute = express.Router();
 
-productRoute.post('/', verifyUser, checkPermission('SHOP', 'ADMIN'), upload.single('main_image'), validateSchema(productSchema), productController.create);
+// ANYONE
 productRoute.get('/', productController.read);
 productRoute.get('/me', verifyUser, productController.readMyProducts);
 productRoute.get('/:id', productController.readOne);
-productRoute.put('/:id', verifyUser, checkPermission('SHOP', 'ADMIN'), validateSchema(productSchema), productController.update);
-productRoute.delete('/:id', verifyUser, checkPermission('SHOP', 'ADMIN'), productController.delete);
+
+// VERIFY
+
+productRoute.use(verifyUser)
+productRoute.use(checkPermission('SHOP', 'ADMIN'))
+productRoute.use(preventInActiveUser)
+
+productRoute.post('/', upload.single('main_image'), validateSchema(productSchema), productController.create);
+productRoute.put('/:id', validateSchema(productSchema), productController.update);
+productRoute.delete('/:id', productController.delete);
 
 export default productRoute;

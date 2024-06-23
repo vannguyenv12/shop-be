@@ -4,8 +4,11 @@ import { productVariantItemController } from '../controller/product-variant-item
 
 const productVariantItemRoute = express.Router();
 
-productVariantItemRoute.post('/:productId/:variantId', verifyUser, checkPermission('ADMIN', 'SHOP'), productVariantItemController.addItems);
-productVariantItemRoute.delete('/:productId/:variantId/:variantItemId', verifyUser, checkPermission('ADMIN', 'SHOP'), productVariantItemController.delete);
+productVariantItemRoute.use(verifyUser);
+productVariantItemRoute.use(checkPermission('ADMIN', 'SHOP'));
+
+productVariantItemRoute.post('/:productId/:variantId', productVariantItemController.addItems);
+productVariantItemRoute.delete('/:productId/:variantId/:variantItemId', productVariantItemController.delete);
 
 
 export default productVariantItemRoute;

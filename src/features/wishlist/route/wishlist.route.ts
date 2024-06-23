@@ -4,9 +4,11 @@ import { verifyUser } from '~/globals/middlewares/auth.middleware';
 
 const wishlistRoute = express.Router();
 
-wishlistRoute.post('/', verifyUser, wishlistController.addWishlist);
-wishlistRoute.delete('/:productId', verifyUser, wishlistController.delete);
-wishlistRoute.get('/', verifyUser, wishlistController.read);
+wishlistRoute.use(verifyUser);
+
+wishlistRoute.post('/', wishlistController.addWishlist);
+wishlistRoute.delete('/:productId', wishlistController.delete);
+wishlistRoute.get('/', wishlistController.read);
 
 
 export default wishlistRoute;
