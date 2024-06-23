@@ -7,7 +7,7 @@ import { verifyUser } from '~/globals/middlewares/auth.middleware';
 
 const userRoute = express.Router();
 
-userRoute.post('/', validateSchema(userSchemaCreate), asyncWrapper(userController.createUser));
+userRoute.post('/', validateSchema(userSchemaCreate), userController.createUser);
 userRoute.get('/me', verifyUser, userController.getMe);
 
 export default userRoute;

@@ -12,6 +12,10 @@ class AuthService {
       email, password, firstName, lastName, avatar
     } = requestBody;
 
+    if (await this.isEmailAlreadyExist(email)) {
+      throw new BadRequestException('Email must be unique');
+    }
+
     const hashedPassword: string = await bcrypt.hash(password, 10);
 
     const newUser: User = await prisma.user.create({
