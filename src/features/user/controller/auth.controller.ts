@@ -4,13 +4,7 @@ import { BadRequestException } from "~/globals/middlewares/error.middleware";
 import { authService } from "~/services/db/auth.service";
 
 class AuthController {
-  public async registerUser(req: Request, res: Response, next: NextFunction) {
-
-    if (await authService.isEmailAlreadyExist(req.body.email)) {
-      next(new BadRequestException('Email must be unique'));
-      return;
-    }
-
+  public async registerUser(req: Request, res: Response) {
     const accessToken = await authService.addUser(req.body);
 
     res.status(HTTP_STATUS.CREATED).json({
@@ -19,7 +13,7 @@ class AuthController {
     });
   }
 
-  public async loginUser(req: Request, res: Response, next: NextFunction) {
+  public async loginUser(req: Request, res: Response) {
     const accessToken = await authService.login(req.body);
 
     res.status(HTTP_STATUS.CREATED).json({

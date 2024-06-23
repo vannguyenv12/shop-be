@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 import { prisma } from "~/prisma";
 import jwt from 'jsonwebtoken';
 import { NextFunction } from "express";
-import { BadRequestException } from "~/globals/middlewares/error.middleware";
+import { BadRequestException, ForbiddenException, NotFoundException } from "~/globals/middlewares/error.middleware";
 import { IAuthLogin, IAuthRegister } from "~/features/user/interface/auth.interface";
 import bcrypt from 'bcrypt';
 
@@ -12,8 +12,9 @@ class AuthService {
       email, password, firstName, lastName, avatar
     } = requestBody;
 
-    if (await this.isEmailAlreadyExist(email)) {
-      throw new BadRequestException('Email must be unique');
+    const userByEmail: User | null = await this.getUserByEmail(email);
+    if (!userByEmail) {
+      throw new NotFoundException('Email must be unique');
     }
 
     const hashedPassword: string = await bcrypt.hash(password, 10);
@@ -41,6 +42,11 @@ class AuthService {
     if (!user) {
       throw new BadRequestException('Invalid Credentials');
     }
+
+    if (!user.isActive) {
+      throw new ForbiddenException('This account was banned');
+    }
+
     // 3) Check password
     const isMatchPassword: boolean = await bcrypt.compare(requestBody.password, user.password);
     if (!isMatchPassword) {
