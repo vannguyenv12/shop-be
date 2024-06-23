@@ -19,6 +19,7 @@ class Server {
 
   private setupMiddleware(): void {
     this.app.use(express.json()); // req.body
+    this.app.use('/images', express.static('images'))
   }
 
   private setupRoutes(): void {
