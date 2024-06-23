@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { ForbiddenException, UnAuthorizedException } from "./error.middleware";
+import { ForbiddenException, NotFoundException, UnAuthorizedException } from "./error.middleware";
 import jwt from 'jsonwebtoken';
+import { userService } from "~/services/db/user.service";
 
 
 export function verifyUser(req: Request, res: Response, next: NextFunction) {
@@ -34,4 +35,18 @@ export function checkPermission(...roles: string[]) {
 
     next();
   }
+}
+
+export async function preventInActiveUser(req: Request, res: Response, next: NextFunction) {
+  const user = await userService.get(req.currentUser.id);
+
+  if (!user) {
+    throw new NotFoundException('User does not exist');
+  }
+
+  if (!user.isActive) {
+    throw new ForbiddenException('You was banned');
+  }
+
+  next();
 }

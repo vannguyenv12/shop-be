@@ -51,6 +51,12 @@ class UserService {
     })
   }
 
+  public async get(id: number) {
+    const user = await prisma.user.findFirst({ where: { id } });
+
+    return user;
+  }
+
   private returnUser(user: User) {
     return {
       email: user.email,
