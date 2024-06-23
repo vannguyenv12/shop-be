@@ -43,6 +43,37 @@ class UserService {
 
   }
 
+  public async editPassword(requestBody: any, currentUser: UserPayload) {
+    const { currentPassword, newPassword, confirmNewPassword } = requestBody;
+
+    const userInDB = await this.get(currentUser.id);
+
+    if (!userInDB) {
+      throw new NotFoundException('User does not exist');
+    }
+
+    const isMatchPassword: boolean = await bcrypt.compare(currentPassword, userInDB.password);
+
+    if (!isMatchPassword) {
+      throw new NotFoundException('Password wrong!');
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      throw new NotFoundException('Passwords are not same!');
+    }
+
+    const hashedNewPassword: string = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+      where: { id: currentUser.id },
+      data: {
+        password: hashedNewPassword
+      }
+    })
+
+
+  }
+
   public async remove(id: number, currentUser: UserPayload) {
     // User cannot be delete
     await prisma.user.update({

@@ -24,6 +24,14 @@ class UserController {
     })
   }
 
+  public async changePassword(req: Request, res: Response) {
+    await userService.editPassword(req.body, req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Update password',
+    })
+  }
+
   public async delete(req: Request, res: Response) {
     await userService.remove(parseInt(req.params.id), req.currentUser);
 

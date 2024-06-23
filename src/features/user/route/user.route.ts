@@ -10,6 +10,7 @@ const userRoute = express.Router();
 userRoute.use(verifyUser)
 userRoute.use(preventInActiveUser)
 
+userRoute.post('/change-password', userController.changePassword);
 userRoute.post('/', checkPermission('ADMIN'), validateSchema(userSchemaCreate), userController.createUser);
 userRoute.put('/:id', validateSchema(userSchemaUpdate), userController.update);
 userRoute.delete('/:id', userController.delete);
