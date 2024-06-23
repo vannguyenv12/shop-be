@@ -1,8 +1,7 @@
-import { Address, Product } from "@prisma/client";
 import { ForbiddenException } from "../middlewares/error.middleware";
 
 export class Helper {
-  public static checkPermission(entity: any, entityProperty: string, currentUser: UserPayload) {
+  public static checkPermission<EntityType extends { [key: string]: any }>(entity: EntityType, entityProperty: string, currentUser: UserPayload) {
     if (currentUser.role === 'ADMIN') return;
     if (currentUser.id === entity![entityProperty]) return;
 
