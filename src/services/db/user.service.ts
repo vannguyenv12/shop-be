@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 import { prisma } from "~/prisma";
 import bcrypt from 'bcrypt';
 import { authService } from "./auth.service";
-import { BadRequestException, NotFoundException } from "~/globals/middlewares/error.middleware";
+import { BadRequestException, ForbiddenException, NotFoundException } from "~/globals/middlewares/error.middleware";
 
 class UserService {
   public async add(requestBody: any) {
@@ -29,6 +29,10 @@ class UserService {
 
   public async edit(id: number, requestBody: any, currentUser: UserPayload) {
     const { firstName, lastName, avatar } = requestBody;
+
+    if (currentUser.id !== id && currentUser.role !== 'ADMIN') {
+      throw new ForbiddenException('You cannot perform this action')
+    }
 
     const user: User = await prisma.user.update({
       where: { id },
@@ -75,6 +79,10 @@ class UserService {
   }
 
   public async remove(id: number, currentUser: UserPayload) {
+    if (currentUser.id !== id && currentUser.role !== 'ADMIN') {
+      throw new ForbiddenException('You cannot perform this action')
+    }
+
     // User cannot be delete
     await prisma.user.update({
       where: { id },
