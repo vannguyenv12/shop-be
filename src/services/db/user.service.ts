@@ -3,9 +3,10 @@ import { prisma } from "~/prisma";
 import bcrypt from 'bcrypt';
 import { authService } from "./auth.service";
 import { BadRequestException, ForbiddenException, NotFoundException } from "~/globals/middlewares/error.middleware";
+import { IUserCreateBody, IUserUpdateBody, IUserUpdatePasswordBody } from "~/features/user/interface/user.interface";
 
 class UserService {
-  public async add(requestBody: any) {
+  public async add(requestBody: IUserCreateBody) {
     const {
       email, password, firstName, lastName, avatar
     } = requestBody;
@@ -27,7 +28,7 @@ class UserService {
 
   }
 
-  public async edit(id: number, requestBody: any, currentUser: UserPayload) {
+  public async edit(id: number, requestBody: IUserUpdateBody, currentUser: UserPayload) {
     const { firstName, lastName, avatar } = requestBody;
 
     if (currentUser.id !== id && currentUser.role !== 'ADMIN') {
@@ -47,7 +48,7 @@ class UserService {
 
   }
 
-  public async editPassword(requestBody: any, currentUser: UserPayload) {
+  public async editPassword(requestBody: IUserUpdatePasswordBody, currentUser: UserPayload) {
     const { currentPassword, newPassword, confirmNewPassword } = requestBody;
 
     const userInDB = await this.get(currentUser.id);
