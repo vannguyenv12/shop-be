@@ -15,7 +15,7 @@ class ProductVariantService {
       throw new NotFoundException(`Product has ID: ${productId} does not exist`);
     }
 
-    Helper.checkPermission(currentProduct!, currentUser);
+    Helper.checkPermission(currentProduct!, 'shopId', currentUser);
 
     const variant: ProductVariant = await prisma.productVariant.create({
       data: {
@@ -34,7 +34,7 @@ class ProductVariantService {
     if (!currentProduct) {
       throw new NotFoundException(`Product has ID: ${productId} does not exist`);
     }
-    Helper.checkPermission(currentProduct!, currentUser);
+    Helper.checkPermission(currentProduct!, 'shopId', currentUser);
 
     await prisma.productVariant.delete({
       where: { id: variantId }

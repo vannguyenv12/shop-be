@@ -7,5 +7,6 @@ const addressRoute = express.Router();
 
 addressRoute.use(verifyUser)
 addressRoute.post('/', addressController.addAddress);
+addressRoute.delete('/:id', addressController.delete);
 
 export default addressRoute;

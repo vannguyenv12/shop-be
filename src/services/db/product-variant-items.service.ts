@@ -16,7 +16,7 @@ class ProductVariantItemsService {
       throw new NotFoundException(`Product has ID: ${productId} does not exist`);
     }
 
-    Helper.checkPermission(currentProduct!, currentUser);
+    Helper.checkPermission(currentProduct!, 'shopId', currentUser);
 
     const variantItem: ProductVariantItem = await prisma.productVariantItem.create({
       data: {
@@ -37,7 +37,7 @@ class ProductVariantItemsService {
       throw new NotFoundException(`Product has ID: ${productId} does not exist`);
     }
 
-    Helper.checkPermission(currentProduct!, currentUser);
+    Helper.checkPermission(currentProduct!, 'shopId', currentUser);
 
 
     const variant: IProductVariant | null = await prisma.productVariant.findFirst({

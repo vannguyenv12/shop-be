@@ -15,7 +15,7 @@ class ProductImagesService {
       throw new NotFoundException(`Product has ID: ${productId} does not exist`);
     }
 
-    Helper.checkPermission(currentProduct!, currentUser);
+    Helper.checkPermission(currentProduct!, 'shopId', currentUser);
 
     const productImages: ProductImages[] = [];
 
@@ -40,7 +40,7 @@ class ProductImagesService {
       throw new NotFoundException(`Product has ID: ${productId} does not exist`);
     }
 
-    Helper.checkPermission(currentProduct!, currentUser);
+    Helper.checkPermission(currentProduct!, 'shopId', currentUser);
 
     await prisma.productImages.delete({
       where: { id: imageId }

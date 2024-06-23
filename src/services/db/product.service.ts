@@ -79,7 +79,7 @@ class ProductService {
     }
 
     const currentProduct = await this.getProduct(id);
-    Helper.checkPermission(currentProduct!, currentUser);
+    Helper.checkPermission(currentProduct!, 'shopId', currentUser);
 
 
     const product = await prisma.product.update({
@@ -98,7 +98,7 @@ class ProductService {
     }
 
     const currentProduct = await this.getProduct(id);
-    Helper.checkPermission(currentProduct!, currentUser);
+    Helper.checkPermission(currentProduct!, 'shopId', currentUser);
 
     await prisma.product.delete({
       where: { id }
