@@ -9,6 +9,7 @@ const userRoute = express.Router();
 
 userRoute.post('/', validateSchema(userSchemaCreate), userController.createUser);
 userRoute.put('/:id', verifyUser, validateSchema(userSchemaUpdate), userController.update);
+userRoute.delete('/:id', verifyUser, userController.delete);
 userRoute.get('/me', verifyUser, userController.getMe);
 
 export default userRoute;

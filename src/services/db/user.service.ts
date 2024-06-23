@@ -43,6 +43,14 @@ class UserService {
 
   }
 
+  public async remove(id: number, currentUser: UserPayload) {
+    // User cannot be delete
+    await prisma.user.update({
+      where: { id },
+      data: { isActive: false }
+    })
+  }
+
   private returnUser(user: User) {
     return {
       email: user.email,

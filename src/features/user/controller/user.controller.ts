@@ -26,6 +26,14 @@ class UserController {
     })
   }
 
+  public async delete(req: Request, res: Response) {
+    await userService.remove(parseInt(req.params.id), req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Delete user',
+    })
+  }
+
 }
 
 export const userController: UserController = new UserController();
