@@ -8,6 +8,7 @@ const addressRoute = express.Router();
 addressRoute.use(verifyUser)
 addressRoute.post('/', addressController.addAddress);
 addressRoute.delete('/:id', addressController.delete);
+addressRoute.put('/:id', addressController.updateAddress);
 addressRoute.get('/me', addressController.getMyAddress);
 
 export default addressRoute;

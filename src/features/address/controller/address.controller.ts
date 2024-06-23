@@ -12,6 +12,16 @@ class AddressController {
     });
   }
 
+  public async updateAddress(req: Request, res: Response) {
+    const address = await addressService.update(parseInt(req.params.id), req.body, req.currentUser)
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'update address',
+      data: address
+    });
+  }
+
+
   public async delete(req: Request, res: Response) {
     await addressService.remove(parseInt(req.params.id), req.currentUser);
 
