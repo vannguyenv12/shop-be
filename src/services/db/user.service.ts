@@ -23,12 +23,32 @@ class UserService {
       }
     });
 
+    return this.returnUser(newUser);
+
+  }
+
+  public async edit(id: number, requestBody: any, currentUser: UserPayload) {
+    const { firstName, lastName, avatar } = requestBody;
+
+    const user: User = await prisma.user.update({
+      where: { id },
+      data: {
+        firstName,
+        lastName,
+        avatar
+      }
+    });
+
+    return this.returnUser(user);
+
+  }
+
+  private returnUser(user: User) {
     return {
-      email: newUser.email,
-      firstName: newUser.firstName,
-      lastName: newUser.lastName,
-      avatar: newUser.avatar,
-      role: newUser.role,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      avatar: user.avatar,
     };
   }
 }
