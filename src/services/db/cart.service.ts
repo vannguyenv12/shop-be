@@ -79,7 +79,7 @@ class CartService {
     await prisma.cart.update({
       where: { id: cartItem.cartId },
       data: {
-        totalPrice: currentCart.totalPrice + cartItem.price
+        totalPrice: currentCart.totalPrice + (cartItem.price * cartItem.quantity)
       }
     });
 
@@ -116,7 +116,7 @@ class CartService {
         id: cart.id
       },
       data: {
-        totalPrice: cart.totalPrice - cartItem.price
+        totalPrice: cart.totalPrice - (cartItem.price * cartItem.quantity)
       }
     })
 
