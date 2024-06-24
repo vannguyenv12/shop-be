@@ -5,7 +5,7 @@ import { NotFoundException } from "~/globals/middlewares/error.middleware";
 
 class CartService {
   public async add(requestBody: any, currentUser: UserPayload) {
-    const { productId, variant } = requestBody;
+    const { productId, variant, quantity } = requestBody;
 
     // Check product
     const product: Product | null = await productService.getProduct(productId);
@@ -26,10 +26,34 @@ class CartService {
         productId,
         variant,
         cartId: cart.id,
-        price: product.price
+        price: product.price,
+        quantity
       }
     })
     // 3) Calculate total price of cartItem, assign it to totalPrice of cart
+
+    const currentCart: Cart | null = await this.getCart(cartItem.cartId);
+    if (!currentCart) {
+      throw new NotFoundException(`Cart does not exist`);
+    }
+
+
+    await prisma.cart.update({
+      where: { id: cartItem.cartId },
+      data: {
+        totalPrice: currentCart.totalPrice + cartItem.price
+      }
+    });
+
+
+  }
+
+  private async getCart(cartId: number) {
+    const cart: Cart | null = await prisma.cart.findFirst({
+      where: { id: cartId }
+    });
+
+    return cart;
   }
 }
 
