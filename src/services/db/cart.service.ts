@@ -4,10 +4,13 @@ import { productService } from "./product.service";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { userService } from "./user.service";
 import { Helper } from "~/globals/helpers/helper";
+import { ICartBody } from "~/features/cart/interface/cart.interface";
 
 class CartService {
-  public async add(requestBody: any, currentUser: UserPayload) {
+  public async add(requestBody: ICartBody, currentUser: UserPayload) {
     const { productId, variant, quantity } = requestBody;
+    // Checkbox Size: M, L
+    // {"Size": "L"}
 
     // Check product
     const product: Product | null = await productService.getProduct(productId);
