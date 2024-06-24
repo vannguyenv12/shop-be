@@ -5,3 +5,8 @@ export const couponSchema = Joi.object({
   discountPrice: Joi.number().integer().required(),
   discountType: Joi.string().optional()
 })
+
+export const couponUpdateSchema = Joi.object({
+  discountPrice: Joi.number().integer().required(),
+  discountType: Joi.string().optional()
+})

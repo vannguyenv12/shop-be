@@ -29,6 +29,14 @@ class CouponController {
       data: coupon
     })
   }
+
+  public async update(req: Request, res: Response) {
+    await couponService.edit(req.params.code, req.body);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Update coupon',
+    })
+  }
 }
 
 export const couponController: CouponController = new CouponController()

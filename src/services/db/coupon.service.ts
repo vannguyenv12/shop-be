@@ -41,6 +41,23 @@ class CouponService {
 
     return coupon;
   }
+
+  public async edit(code: string, requestBody: ICouponBody) {
+    const { discountPrice, discountType } = requestBody;
+
+    const coupon: Coupon | null = await prisma.coupon.findFirst({
+      where: { code }
+    });
+
+    if (!coupon) {
+      throw new NotFoundException(`Coupon ${code} not found`);
+    }
+
+    await prisma.coupon.update({
+      where: { code },
+      data: { discountPrice, discountType }
+    })
+  }
 }
 
 export const couponService: CouponService = new CouponService();
