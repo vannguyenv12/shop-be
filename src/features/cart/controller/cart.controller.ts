@@ -26,6 +26,17 @@ class CartController {
       message: 'Remove cart item'
     })
   }
+
+  public async getMyCart(req: Request, res: Response) {
+    const cart = await cartService.get(req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Get my cart',
+      data: cart
+    })
+  }
+
+
 }
 
 export const cartController: CartController = new CartController();

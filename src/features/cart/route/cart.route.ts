@@ -9,5 +9,6 @@ cartRoute.use(verifyUser)
 cartRoute.post('/', cartController.addToCart);
 cartRoute.delete('/:id', cartController.clearCart);
 cartRoute.delete('/item/:id', cartController.removeCartItem);
+cartRoute.get('', cartController.getMyCart);
 
 export default cartRoute;

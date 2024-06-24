@@ -118,6 +118,21 @@ class CartService {
     })
   }
 
+  public async get(currentUser: UserPayload) {
+    const cart = await prisma.cart.findFirst({
+      where: { userId: currentUser.id },
+      include: {
+        cartItems: {
+          include: {
+            product: true
+          }
+        }
+      }
+    });
+
+    return this.returnCart(cart);
+  }
+
   private async getCart(cartId: number, include = {}) {
     const cart: Cart | null = await prisma.cart.findFirst({
       where: { id: cartId },
@@ -142,6 +157,21 @@ class CartService {
     });
 
     return cartItem;
+  }
+
+  private async returnCart(cart: any) {
+    const cartItems = cart.cartItems.map((item: any) => {
+      return {
+        ...item,
+        productName: item.product.name,
+        productImage: item.product.main_image,
+        product: undefined
+      }
+    })
+    return {
+      ...cart,
+      cartItems: cartItems
+    }
   }
 }
 
