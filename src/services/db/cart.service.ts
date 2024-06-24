@@ -40,11 +40,10 @@ class CartService {
     }
 
     // 2) Create CartItem
-    const itemIndex: number = cart?.cartItems?.findIndex((item: any) => item.productId === productId);
-
+    const itemIndex: number | undefined = cart?.cartItems?.findIndex((item: any) => item.productId === productId);
     let cartItem: CartItem;
 
-    if (itemIndex <= -1) {
+    if (itemIndex == undefined || itemIndex <= -1) {
       cartItem = await prisma.cartItem.create({
         data: {
           productId,
