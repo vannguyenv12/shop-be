@@ -32,6 +32,7 @@ model User {
   addresses Address[]
 
   Cart Cart?
+  orders Order[]
 
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
@@ -66,6 +67,7 @@ model Product {
   productVariants ProductVariant[]
 
   cartItems CartItem[]
+  orderItems OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt @default(now())
@@ -135,3 +137,31 @@ model CartItem {
   product Product @relation(fields: [productId], references: [id])
   cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
 }
+
+model Order {
+  id Int @id @default(autoincrement())
+  userId Int
+  address Int
+  totalPrice Float
+  totalQuantity Int @default(1)
+  status String
+
+  orderItems OrderItem[]
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+  productId Int
+  orderId Int
+  variant String? @db.Text
+  price Float
+  quantity Int @default(1)
+
+  product Product @relation(fields: [productId], references: [id])
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+// One user has zero or many order
+// One order has many product
