@@ -102,6 +102,22 @@ class CartService {
     })
   }
 
+  public async removeItem(cartItemId: number, currentUser: UserPayload) {
+    const cartItem: any | null = await this.getCartItem(cartItemId, { cart: true });
+
+    if (!cartItem) {
+      throw new NotFoundException(`Cart item id: ${cartItemId} not found`);
+    }
+
+    Helper.checkPermission(cartItem.cart, 'userId', currentUser);
+
+    console.log(cartItem);
+
+    await prisma.cartItem.delete({
+      where: { id: cartItemId }
+    })
+  }
+
   private async getCart(cartId: number, include = {}) {
     const cart: Cart | null = await prisma.cart.findFirst({
       where: { id: cartId },
@@ -111,9 +127,10 @@ class CartService {
     return cart;
   }
 
-  private async getCartItem(cartItemId: number) {
+  private async getCartItem(cartItemId: number, include = {}) {
     const cartItem: CartItem | null = await prisma.cartItem.findFirst({
-      where: { id: cartItemId }
+      where: { id: cartItemId },
+      include
     });
 
     return cartItem;

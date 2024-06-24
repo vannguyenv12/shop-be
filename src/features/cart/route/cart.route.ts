@@ -8,5 +8,6 @@ const cartRoute = express.Router();
 cartRoute.use(verifyUser)
 cartRoute.post('/', cartController.addToCart);
 cartRoute.delete('/:id', cartController.clearCart);
+cartRoute.delete('/item/:id', cartController.removeCartItem);
 
 export default cartRoute;

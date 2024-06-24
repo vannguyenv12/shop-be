@@ -18,6 +18,14 @@ class CartController {
       message: 'Clear cart'
     })
   }
+
+  public async removeCartItem(req: Request, res: Response) {
+    await cartService.removeItem(parseInt(req.params.id), req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Remove cart item'
+    })
+  }
 }
 
 export const cartController: CartController = new CartController();
