@@ -146,6 +146,21 @@ class CartService {
     return this.returnCart(cart);
   }
 
+  public async getMyCart(currentUser: UserPayload) {
+    const cart = await prisma.cart.findFirst({
+      where: { userId: currentUser.id },
+      include: {
+        cartItems: {
+          include: {
+            product: true
+          }
+        }
+      }
+    });
+
+    return cart;
+  }
+
   private async getCart(cartId: number, include = {}) {
     const cart: Cart | null = await prisma.cart.findFirst({
       where: { id: cartId },
