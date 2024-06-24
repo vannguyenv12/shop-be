@@ -10,14 +10,13 @@ export class Helper {
 
   }
 
-  public static getDiscountPrice(coupon: Coupon, totalOrderPrice: number) {
-    let discount: number = 0;
+  public static getOrderTotalPrice(coupon: Coupon, totalOrderPrice: number) {
     if (coupon.discountType === 'PERCENT') {
-      discount = totalOrderPrice * (coupon.discountPrice / 100); // 100$ * 0.5
+      return totalOrderPrice * (coupon.discountPrice / 100); // 100$ * 0.5
     } else if (coupon.discountType === 'VALUE') {
-      discount = totalOrderPrice - coupon.discountPrice
+      return totalOrderPrice - coupon.discountPrice
     };
 
-    return totalOrderPrice - discount;
+    return totalOrderPrice;
   }
 }

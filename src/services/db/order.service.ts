@@ -3,6 +3,7 @@ import { cartService } from "./cart.service";
 import { prisma } from "~/prisma";
 import { couponService } from "./coupon.service";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
+import { Helper } from "~/globals/helpers/helper";
 
 class OrderService {
   public async add(requestBody: any, currentUser: UserPayload) {
@@ -54,7 +55,7 @@ class OrderService {
       where: { id: newOrder.id },
       data: {
         totalQuantity: totalQuantity,
-        totalPrice: cart.totalPrice
+        totalPrice: Helper.getOrderTotalPrice(coupon, cart.totalPrice)
       }
     })
 
