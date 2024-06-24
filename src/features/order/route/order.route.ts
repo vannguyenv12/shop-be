@@ -9,6 +9,7 @@ orderRoute.use(verifyUser)
 orderRoute.post('/', orderController.addOrder);
 orderRoute.get('/', orderController.getMyOrders);
 orderRoute.put('/:id', checkPermission('ADMIN'), orderController.updateOrderStatus);
+orderRoute.get('/:orderId/:orderItemId', orderController.getOrderItem);
 
 
 export default orderRoute;

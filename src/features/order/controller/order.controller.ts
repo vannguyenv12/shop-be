@@ -27,6 +27,18 @@ class OrderController {
       data: orders
     })
   }
+
+  public async getOrderItem(req: Request, res: Response) {
+    const orderId = parseInt(req.params.orderId);
+    const orderItemId = parseInt(req.params.orderItemId);
+
+    const orderItem = await orderService.getOrderItem(orderId, orderItemId, req.currentUser)
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Get order item',
+      data: orderItem
+    })
+  }
 }
 
 export const orderController: OrderController = new OrderController();

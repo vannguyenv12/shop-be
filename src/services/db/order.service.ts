@@ -1,4 +1,4 @@
-import { Cart, Coupon, Order } from "@prisma/client";
+import { Cart, Coupon, Order, OrderItem } from "@prisma/client";
 import { cartService } from "./cart.service";
 import { prisma } from "~/prisma";
 import { couponService } from "./coupon.service";
@@ -88,9 +88,38 @@ class OrderService {
     return orders;
   }
 
-  private async get(orderId: number) {
+  public async getOrderItem(orderId: number, orderItemId: number, currentUser: UserPayload) {
+    const order: any = await this.get(orderId, { orderItems: true });
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID: ${orderId} not found`);
+    }
+    Helper.checkPermission(order, 'userId', currentUser)
+
+    const orderIndex = order?.orderItems?.findIndex((item: any) => item.id === orderItemId);
+
+    if (orderIndex === 'undefined' || orderIndex <= -1) {
+      throw new NotFoundException(`Order Item Not Found`);
+    }
+
+    const orderItem: OrderItem | null = await prisma.orderItem.findFirst({
+      where: { id: orderItemId },
+      include: {
+        product: true
+      }
+    });
+
+    if (!orderItem) {
+      throw new NotFoundException(`Order item ${orderItemId} not found`);
+    }
+
+    return orderItem;
+  }
+
+  private async get(orderId: number, include = {}) {
     const order = await prisma.order.findFirst({
-      where: { id: orderId }
+      where: { id: orderId },
+      include
     });
 
     return order;
