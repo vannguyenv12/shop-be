@@ -105,8 +105,8 @@ class UserService {
     })
   }
 
-  public async get(id: number) {
-    const user = await prisma.user.findFirst({ where: { id } });
+  public async get(id: number, include = {}) {
+    const user = await prisma.user.findFirst({ where: { id }, include });
 
     return user;
   }
