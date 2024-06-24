@@ -10,6 +10,14 @@ class OrderController {
       message: 'Create order'
     })
   }
+
+  public async updateOrderStatus(req: Request, res: Response) {
+    await orderService.update(parseInt(req.params.id), req.body);
+
+    return res.status(HTTP_STATUS.CREATED).json({
+      message: 'Update order status'
+    })
+  }
 }
 
 export const orderController: OrderController = new OrderController();

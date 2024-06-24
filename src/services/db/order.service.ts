@@ -2,7 +2,7 @@ import { Cart, Coupon } from "@prisma/client";
 import { cartService } from "./cart.service";
 import { prisma } from "~/prisma";
 import { couponService } from "./coupon.service";
-import { NotFoundException } from "~/globals/middlewares/error.middleware";
+import { BadRequestException, NotFoundException } from "~/globals/middlewares/error.middleware";
 import { Helper } from "~/globals/helpers/helper";
 
 class OrderService {
@@ -58,7 +58,34 @@ class OrderService {
         totalPrice: Helper.getOrderTotalPrice(coupon, cart.totalPrice)
       }
     })
+  }
 
+  public async update(orderId: number, requestBody: any) {
+    const { status } = requestBody;
+
+    if (status !== 'pending' && status !== 'delivered') {
+      throw new BadRequestException('status does not support');
+    }
+
+    const order = await this.get(orderId);
+
+    if (!order) {
+      throw new NotFoundException(`Order with ID: ${orderId} not found`);
+    }
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { status }
+    });
+
+  }
+
+  private async get(orderId: number) {
+    const order = await prisma.order.findFirst({
+      where: { id: orderId }
+    });
+
+    return order;
   }
 }
 
