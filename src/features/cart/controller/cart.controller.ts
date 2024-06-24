@@ -10,6 +10,14 @@ class CartController {
       message: 'Add to cart'
     })
   }
+
+  public async clearCart(req: Request, res: Response) {
+    await cartService.clear(parseInt(req.params.id), req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Clear cart'
+    })
+  }
 }
 
 export const cartController: CartController = new CartController();

@@ -3,6 +3,7 @@ import { prisma } from "~/prisma";
 import { productService } from "./product.service";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { userService } from "./user.service";
+import { Helper } from "~/globals/helpers/helper";
 
 class CartService {
   public async add(requestBody: any, currentUser: UserPayload) {
@@ -59,6 +60,7 @@ class CartService {
       if (!currentCartItem) {
         throw new NotFoundException('Cart item not found');
       }
+
       cartItem = await prisma.cartItem.update({
         where: { id: currentCartItem.id },
         data: {
@@ -83,6 +85,22 @@ class CartService {
     });
 
 
+  }
+
+  public async clear(cartId: number, currentUser: UserPayload) {
+    const cart: Cart | null = await this.getCart(cartId);
+
+    if (!cart) {
+      throw new NotFoundException(`Cart id: ${cartId} not found`);
+    }
+
+    Helper.checkPermission(cart, 'userId', currentUser);
+
+    await prisma.cart.delete({
+      where: {
+        id: cartId
+      }
+    })
   }
 
   private async getCart(cartId: number, include = {}) {
