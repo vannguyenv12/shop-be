@@ -1,4 +1,5 @@
 import { Coupon } from "@prisma/client";
+import { ICouponBody } from "~/features/coupon/interface/coupon.interface";
 import { prisma } from "~/prisma";
 
 class CouponService {
@@ -8,6 +9,18 @@ class CouponService {
     })
 
     return coupon;
+  }
+
+  public async add(requestBody: ICouponBody) {
+    const { code, discountPrice, discountType } = requestBody;
+
+    const coupon = await prisma.coupon.create({
+      data: {
+        code, discountPrice, discountType
+      }
+    });
+
+    return coupon
   }
 }
 
