@@ -13,5 +13,6 @@ couponRoute.post('/', validateSchema(couponSchema), couponController.create);
 couponRoute.put('/:code', validateSchema(couponUpdateSchema), couponController.update);
 couponRoute.get('/', couponController.read);
 couponRoute.get('/:code', couponController.readOne);
+couponRoute.delete('/:code', couponController.delete);
 
 export default couponRoute;

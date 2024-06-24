@@ -37,6 +37,14 @@ class CouponController {
       message: 'Update coupon',
     })
   }
+
+  public async delete(req: Request, res: Response) {
+    await couponService.remove(req.params.code);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'delete coupon',
+    })
+  }
 }
 
 export const couponController: CouponController = new CouponController()

@@ -14,6 +14,10 @@ class OrderService {
       throw new NotFoundException(`The coupon ${couponCode} does not exist`);
     }
 
+    if (coupon.discountPrice <= 0) {
+      throw new NotFoundException(`The coupon no longer exist`);
+    }
+
     // Get all cart items in my cart
     const cart: any | null = await cartService.getMyCart(currentUser);
     // Create a Order
@@ -55,7 +59,8 @@ class OrderService {
       where: { id: newOrder.id },
       data: {
         totalQuantity: totalQuantity,
-        totalPrice: Helper.getOrderTotalPrice(coupon, cart.totalPrice)
+        totalPrice: Helper.getOrderTotalPrice(coupon, cart.totalPrice),
+        couponCode
       }
     })
   }

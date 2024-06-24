@@ -58,6 +58,21 @@ class CouponService {
       data: { discountPrice, discountType }
     })
   }
+
+  public async remove(code: string) {
+    const coupon: Coupon | null = await prisma.coupon.findFirst({
+      where: { code }
+    });
+
+    if (!coupon) {
+      throw new NotFoundException(`Coupon ${code} not found`);
+    }
+
+    await prisma.coupon.update({
+      where: { code },
+      data: { discountPrice: 0 }
+    })
+  }
 }
 
 export const couponService: CouponService = new CouponService();
