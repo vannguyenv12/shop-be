@@ -10,5 +10,7 @@ const couponRoute = express.Router();
 couponRoute.use(verifyUser)
 couponRoute.use(checkPermission('ADMIN'))
 couponRoute.post('/', validateSchema(couponSchema), couponController.create);
+couponRoute.get('/', couponController.read);
+couponRoute.get('/:code', couponController.readOne);
 
 export default couponRoute;
