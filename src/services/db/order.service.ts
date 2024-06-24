@@ -1,4 +1,4 @@
-import { Cart, Coupon } from "@prisma/client";
+import { Cart, Coupon, Order } from "@prisma/client";
 import { cartService } from "./cart.service";
 import { prisma } from "~/prisma";
 import { couponService } from "./coupon.service";
@@ -78,6 +78,14 @@ class OrderService {
       data: { status }
     });
 
+  }
+
+  public async getMyOrders(currentUser: UserPayload) {
+    const orders: Order[] = await prisma.order.findMany({
+      where: { userId: currentUser.id }
+    });
+
+    return orders;
   }
 
   private async get(orderId: number) {

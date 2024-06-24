@@ -197,7 +197,7 @@ class CartService {
   }
 
   private async returnCart(cart: any) {
-    const cartItems = cart.cartItems.map((item: any) => {
+    const cartItems = cart?.cartItems.map((item: any) => {
       return {
         ...item,
         productName: item.product.name,

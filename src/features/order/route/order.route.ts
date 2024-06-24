@@ -7,7 +7,8 @@ const orderRoute = express.Router();
 
 orderRoute.use(verifyUser)
 orderRoute.post('/', orderController.addOrder);
-orderRoute.put('/:id', orderController.updateOrderStatus);
+orderRoute.get('/', orderController.getMyOrders);
+orderRoute.put('/:id', checkPermission('ADMIN'), orderController.updateOrderStatus);
 
 
 export default orderRoute;

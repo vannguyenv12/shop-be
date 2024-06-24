@@ -14,8 +14,17 @@ class OrderController {
   public async updateOrderStatus(req: Request, res: Response) {
     await orderService.update(parseInt(req.params.id), req.body);
 
-    return res.status(HTTP_STATUS.CREATED).json({
+    return res.status(HTTP_STATUS.OK).json({
       message: 'Update order status'
+    })
+  }
+
+  public async getMyOrders(req: Request, res: Response) {
+    const orders = await orderService.getMyOrders(req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Get my orders',
+      data: orders
     })
   }
 }
