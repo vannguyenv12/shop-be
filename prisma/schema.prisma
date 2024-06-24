@@ -143,6 +143,7 @@ model Order {
   id Int @id @default(autoincrement())
   userId Int
   addressId Int
+  couponCode String?
   totalPrice Float
   totalQuantity Int @default(1)
   status String
@@ -151,6 +152,7 @@ model Order {
 
   user User @relation(fields: [userId], references: [id])
   address Address @relation(fields: [addressId], references: [id])
+  coupon Coupon? @relation(fields: [couponCode], references: [code])
 }
 
 model OrderItem {
@@ -165,5 +167,15 @@ model OrderItem {
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
-// One user has zero or many order
-// One order has many product
+model Coupon {
+  code String @id
+  discountPrice Int
+  discountType DiscountType @default(PERCENT)
+
+  orders Order[]
+}
+
+enum DiscountType {
+  PERCENT
+  VALUE
+}
