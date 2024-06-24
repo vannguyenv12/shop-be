@@ -1,10 +1,17 @@
-import { Cart } from "@prisma/client";
+import { Cart, Coupon } from "@prisma/client";
 import { cartService } from "./cart.service";
 import { prisma } from "~/prisma";
+import { couponService } from "./coupon.service";
+import { NotFoundException } from "~/globals/middlewares/error.middleware";
 
 class OrderService {
   public async add(requestBody: any, currentUser: UserPayload) {
     const { couponCode, addressId } = requestBody;
+
+    const coupon: Coupon | null = await couponService.get(couponCode);
+    if (!coupon) {
+      throw new NotFoundException(`The coupon ${couponCode} does not exist`);
+    }
 
     // Get all cart items in my cart
     const cart: any | null = await cartService.getMyCart(currentUser);
