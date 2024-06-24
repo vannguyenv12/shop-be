@@ -20,19 +20,36 @@ class OrderService {
     })
 
     // Loop through the cart items and add it to orderItem
+    const orderItems = [];
+    let totalQuantity: number = 0;
+
     for (const cartItem of cart.cartItems) {
-      const newOrderIteme = await prisma.orderItem.create({
-        data: {
-          orderId: newOrder.id,
-          productId: cartItem.productId,
-          variant: cartItem.variant,
-          price: cartItem.price,
-          quantity: cartItem.quantity,
-        }
-      })
+      orderItems.push({
+        orderId: newOrder.id,
+        productId: cartItem.productId,
+        variant: cartItem.variant,
+        price: cartItem.price,
+        quantity: cartItem.quantity,
+      });
+
+      totalQuantity += cartItem.quantity
     }
 
+    await prisma.orderItem.createMany({
+      data: orderItems
+    })
+
     // Clear carts
+    cartService.clear(cart.id, currentUser);
+
+    // update total price of order
+    await prisma.order.update({
+      where: { id: newOrder.id },
+      data: {
+        totalQuantity: totalQuantity,
+        totalPrice: cart.totalPrice
+      }
+    })
 
   }
 }
