@@ -109,9 +109,19 @@ class CartService {
       throw new NotFoundException(`Cart item id: ${cartItemId} not found`);
     }
 
-    Helper.checkPermission(cartItem.cart, 'userId', currentUser);
+    const cart: Cart = await this.getCart(cartItem.cartId) as Cart;
 
-    console.log(cartItem);
+    await prisma.cart.update({
+      where: {
+        id: cart.id
+      },
+      data: {
+        totalPrice: cart.totalPrice - cartItem.price
+      }
+    })
+
+
+    Helper.checkPermission(cartItem.cart, 'userId', currentUser);
 
     await prisma.cartItem.delete({
       where: { id: cartItemId }
