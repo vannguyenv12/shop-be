@@ -20,10 +20,10 @@ class CartService {
       throw new NotFoundException(`User does not exist`);
     }
 
-    let cart: Cart;
+    let cart: any;
 
     if (user?.Cart?.id) {
-      const existingCart: Cart | null = await this.getCart(user.Cart.id);
+      const existingCart: Cart | null = await this.getCart(user.Cart.id, { cartItems: true });
       if (!existingCart) {
         throw new NotFoundException(`Cart does not exist`);
       }
@@ -39,15 +39,35 @@ class CartService {
     }
 
     // 2) Create CartItem
-    const cartItem: CartItem = await prisma.cartItem.create({
-      data: {
-        productId,
-        variant,
-        cartId: cart.id,
-        price: product.price,
-        quantity
+    const itemIndex: number = cart?.cartItems?.findIndex((item: any) => item.productId === productId);
+
+    let cartItem: CartItem;
+
+    if (itemIndex <= -1) {
+      cartItem = await prisma.cartItem.create({
+        data: {
+          productId,
+          variant,
+          cartId: cart.id,
+          price: product.price,
+          quantity
+        }
+      })
+    } else {
+      const currentCartItem = await this.getCartItemByProduct(cart.id, productId);
+
+      if (!currentCartItem) {
+        throw new NotFoundException('Cart item not found');
       }
-    })
+      cartItem = await prisma.cartItem.update({
+        where: { id: currentCartItem.id },
+        data: {
+          quantity: currentCartItem.quantity + (quantity || 1)
+        }
+      })
+    }
+
+
     // 3) Calculate total price of cartItem, assign it to totalPrice of cart
 
     const currentCart: Cart | null = await this.getCart(cartItem.cartId);
@@ -65,12 +85,29 @@ class CartService {
 
   }
 
-  private async getCart(cartId: number) {
+  private async getCart(cartId: number, include = {}) {
     const cart: Cart | null = await prisma.cart.findFirst({
-      where: { id: cartId }
+      where: { id: cartId },
+      include
     });
 
     return cart;
+  }
+
+  private async getCartItem(cartItemId: number) {
+    const cartItem: CartItem | null = await prisma.cartItem.findFirst({
+      where: { id: cartItemId }
+    });
+
+    return cartItem;
+  }
+
+  private async getCartItemByProduct(cartId: number, productId: number) {
+    const cartItem: CartItem | null = await prisma.cartItem.findFirst({
+      where: { cartId, productId }
+    });
+
+    return cartItem;
   }
 }
 
