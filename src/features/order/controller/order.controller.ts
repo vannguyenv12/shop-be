@@ -19,6 +19,15 @@ class OrderController {
     })
   }
 
+  public async getAllOrders(req: Request, res: Response) {
+    const orders = await orderService.getAllOrders();
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Get all orders',
+      data: orders
+    })
+  }
+
   public async getMyOrders(req: Request, res: Response) {
     const orders = await orderService.getMyOrders(req.currentUser);
 

@@ -8,6 +8,7 @@ const orderRoute = express.Router();
 orderRoute.use(verifyUser)
 orderRoute.post('/', orderController.addOrder);
 orderRoute.get('/', orderController.getMyOrders);
+orderRoute.get('/all', checkPermission('ADMIN'), orderController.getAllOrders);
 orderRoute.put('/:id', checkPermission('ADMIN'), orderController.updateOrderStatus);
 orderRoute.get('/:orderId/:orderItemId', orderController.getOrderItem);
 
