@@ -82,11 +82,20 @@ class CartService {
     await prisma.cart.update({
       where: { id: cartItem.cartId },
       data: {
-        totalPrice: currentCart.totalPrice + (cartItem.price * cartItem.quantity)
+        totalPrice: await this.calcTotalPrice(currentUser)
       }
     });
+  }
 
+  private async calcTotalPrice(currentUser: UserPayload) {
+    const cart = await this.get(currentUser);
 
+    let totalPrice = 0;
+    for (const cartItem of cart.cartItems) {
+      totalPrice += (cartItem.price * cartItem.quantity)
+    }
+
+    return totalPrice
   }
 
   public async clear(cartId: number, currentUser: UserPayload) {
