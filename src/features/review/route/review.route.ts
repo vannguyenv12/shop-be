@@ -4,6 +4,7 @@ import { reviewController } from '../controller/review.controller';
 
 const reviewRoute = express.Router();
 
+reviewRoute.get('/avg/:id', reviewController.getAvg);
 reviewRoute.use(verifyUser);
 
 reviewRoute.post('/', reviewController.addReview);

@@ -23,11 +23,11 @@ class ReviewService {
       throw new BadRequestException(`You does not buy this product`);
     }
 
-    const existingReview = await this.getReviewByProductAndUser(productId, currentUser.id);
+    // const existingReview = await this.getReviewByProductAndUser(productId, currentUser.id);
 
-    if (existingReview) {
-      throw new BadRequestException(`You already has a review on this product`);
-    }
+    // if (existingReview) {
+    //   throw new BadRequestException(`You already has a review on this product`);
+    // }
 
     // 2) Create a review
     const review = await prisma.review.create({
@@ -76,6 +76,19 @@ class ReviewService {
     })
   }
 
+  public async getAvgRating(productId: number): Promise<number | null> {
+    const aggregations = await prisma.review.aggregate({
+      _avg: {
+        rating: true
+      },
+      where: {
+        productId
+      }
+    });
+
+    return aggregations._avg.rating;
+  }
+
   private async get(reviewId: number) {
     const review = await prisma.review.findFirst({
       where: { id: reviewId }
@@ -91,6 +104,8 @@ class ReviewService {
 
     return review;
   }
+
+
 }
 
 export const reviewService: ReviewService = new ReviewService();

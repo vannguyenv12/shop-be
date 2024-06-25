@@ -28,6 +28,15 @@ class ReviewController {
       message: 'Delete review',
     })
   }
+
+  public async getAvg(req: Request, res: Response) {
+    const avg = await reviewService.getAvgRating(parseInt(req.params.id));
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Get avg product',
+      data: avg
+    })
+  }
 }
 
 export const reviewController: ReviewController = new ReviewController();
