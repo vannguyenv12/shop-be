@@ -1,10 +1,11 @@
 import { Review } from "@prisma/client";
+import { IReviewBody } from "~/features/review/interface/review.interface";
 import { Helper } from "~/globals/helpers/helper";
 import { BadRequestException, NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 
 class ReviewService {
-  public async add(requestBody: any, currentUser: UserPayload) {
+  public async add(requestBody: IReviewBody, currentUser: UserPayload) {
     // 1) Make sure user already bought product
     const { productId, rating, comment } = requestBody;
 
@@ -23,11 +24,11 @@ class ReviewService {
       throw new BadRequestException(`You does not buy this product`);
     }
 
-    // const existingReview = await this.getReviewByProductAndUser(productId, currentUser.id);
+    const existingReview = await this.getReviewByProductAndUser(productId, currentUser.id);
 
-    // if (existingReview) {
-    //   throw new BadRequestException(`You already has a review on this product`);
-    // }
+    if (existingReview) {
+      throw new BadRequestException(`You already has a review on this product`);
+    }
 
     // 2) Create a review
     const review = await prisma.review.create({
@@ -40,7 +41,7 @@ class ReviewService {
 
   }
 
-  public async update(reviewId: number, requestBody: any, currentUser: UserPayload) {
+  public async update(reviewId: number, requestBody: IReviewBody, currentUser: UserPayload) {
     const { rating, comment } = requestBody;
 
     const foundReview: Review | null = await this.get(reviewId);
