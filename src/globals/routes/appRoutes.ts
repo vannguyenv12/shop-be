@@ -8,6 +8,7 @@ import productImagesRoute from "~/features/product-images/route/product-images.r
 import productVariantItemRoute from "~/features/product-variant/route/product-variant-item.route";
 import productVariantRoute from "~/features/product-variant/route/product-variant.route";
 import productRoute from "~/features/product/route/product.route";
+import reviewRoute from "~/features/review/route/review.route";
 import authRoute from "~/features/user/route/auth.route";
 import userRoute from "~/features/user/route/user.route";
 import wishlistRoute from "~/features/wishlist/route/wishlist.route";
@@ -25,6 +26,7 @@ const appRoutes = (app: Application) => {
   app.use('/api/v1/carts', cartRoute);
   app.use('/api/v1/orders', orderRoute);
   app.use('/api/v1/coupons', couponRoute);
+  app.use('/api/v1/reviews', reviewRoute);
 
 }
 
