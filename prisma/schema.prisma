@@ -33,6 +33,7 @@ model User {
 
   Cart Cart?
   orders Order[]
+  reviews Review[]
 
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
@@ -68,6 +69,8 @@ model Product {
 
   cartItems CartItem[]
   orderItems OrderItem[]
+  reviews Review[]
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt @default(now())
@@ -178,4 +181,18 @@ model Coupon {
 enum DiscountType {
   PERCENT
   VALUE
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+  rating Int
+  comment String @db.Text
+  userId Int
+  productId Int
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt @default(now())
 }
