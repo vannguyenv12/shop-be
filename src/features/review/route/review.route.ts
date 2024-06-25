@@ -7,6 +7,7 @@ const reviewRoute = express.Router();
 reviewRoute.use(verifyUser);
 
 reviewRoute.post('/', reviewController.addReview);
+reviewRoute.put('/:id', reviewController.updateReview);
 
 
 export default reviewRoute;

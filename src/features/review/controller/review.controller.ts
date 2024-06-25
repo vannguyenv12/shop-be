@@ -11,6 +11,15 @@ class ReviewController {
       data: review
     });
   }
+
+  public async updateReview(req: Request, res: Response) {
+    const review = await reviewService.update(parseInt(req.params.id), req.body, req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Update review',
+      data: review
+    })
+  }
 }
 
 export const reviewController: ReviewController = new ReviewController();

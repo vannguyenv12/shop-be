@@ -1,4 +1,6 @@
-import { BadRequestException } from "~/globals/middlewares/error.middleware";
+import { Review } from "@prisma/client";
+import { Helper } from "~/globals/helpers/helper";
+import { BadRequestException, NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 
 class ReviewService {
@@ -30,6 +32,36 @@ class ReviewService {
 
     return review;
 
+  }
+
+  public async update(reviewId: number, requestBody: any, currentUser: UserPayload) {
+    const { rating, comment } = requestBody;
+
+    const foundReview: Review | null = await this.get(reviewId);
+
+    if (!foundReview) {
+      throw new NotFoundException(`The review: ${reviewId} not found`);
+    }
+
+    Helper.checkPermission(foundReview, 'userId', currentUser);
+
+
+    const review = await prisma.review.update({
+      where: { id: reviewId },
+      data: {
+        rating, comment
+      }
+    });
+
+    return review;
+  }
+
+  private async get(reviewId: number) {
+    const review = await prisma.review.findFirst({
+      where: { id: reviewId }
+    });
+
+    return review;
   }
 }
 
