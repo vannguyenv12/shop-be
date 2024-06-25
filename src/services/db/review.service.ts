@@ -56,6 +56,20 @@ class ReviewService {
     return review;
   }
 
+  public async remove(reviewId: number, currentUser: UserPayload) {
+    const foundReview: Review | null = await this.get(reviewId);
+
+    if (!foundReview) {
+      throw new NotFoundException(`The review: ${reviewId} not found`);
+    }
+
+    Helper.checkPermission(foundReview, 'userId', currentUser);
+
+    await prisma.review.delete({
+      where: { id: reviewId }
+    })
+  }
+
   private async get(reviewId: number) {
     const review = await prisma.review.findFirst({
       where: { id: reviewId }

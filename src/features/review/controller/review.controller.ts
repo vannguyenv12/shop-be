@@ -20,6 +20,14 @@ class ReviewController {
       data: review
     })
   }
+
+  public async deleteReview(req: Request, res: Response) {
+    await reviewService.remove(parseInt(req.params.id), req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({
+      message: 'Delete review',
+    })
+  }
 }
 
 export const reviewController: ReviewController = new ReviewController();

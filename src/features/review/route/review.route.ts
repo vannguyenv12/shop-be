@@ -8,6 +8,7 @@ reviewRoute.use(verifyUser);
 
 reviewRoute.post('/', reviewController.addReview);
 reviewRoute.put('/:id', reviewController.updateReview);
+reviewRoute.delete('/:id', reviewController.deleteReview);
 
 
 export default reviewRoute;
