@@ -2,7 +2,9 @@ import { Category } from "@prisma/client";
 import { ICategoryBody } from "~/features/category/interface/category.interface";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
-import client from "../cache/redis.cache";
+import RedisCache from "../cache/redis.cache";
+
+const redisCache: RedisCache = new RedisCache();
 
 class CategoryService {
   public async add(requestBody: ICategoryBody): Promise<Category> {
@@ -18,6 +20,8 @@ class CategoryService {
   }
 
   public async read(): Promise<Category[]> {
+    await redisCache.client.SET('key2', 'value2');
+
     const categories: Category[] = await prisma.category.findMany({
       where: {
         status: true

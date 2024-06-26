@@ -1,11 +1,19 @@
-import { createClient } from 'redis';
+import { createClient, RedisClientType } from 'redis';
 
-const client = createClient({
-  url: 'redis://localhost:6380'
-})
+class RedisCache {
+  public client: RedisClientType;
 
-client.on('error', err => console.log('Redis Client Error', err))
+  constructor() {
+    this.client = createClient({
+      url: 'redis://localhost:6380'
+    })
 
-client.connect();
+    this.client.on('error', err => console.log('Redis Client Error', err))
 
-export default client;
+    this.client.connect();
+
+  }
+}
+
+
+export default RedisCache;
