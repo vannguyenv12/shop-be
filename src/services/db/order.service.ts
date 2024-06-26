@@ -20,6 +20,29 @@ class OrderService {
 
     // Get all cart items in my cart
     const cart: any | null = await cartService.getMyCart(currentUser);
+
+    // Make sure product.quantity > 0
+    // cart quantity of product <= product.quantity
+
+    for (const cartItem of cart.cartItems) {
+      const product = await prisma.product.findFirst({
+        where: { id: cartItem.productId },
+      });
+
+      if (!product) {
+        throw new NotFoundException(`Product not found`);
+      }
+
+      if (product?.quantity <= 0) {
+        throw new BadRequestException(`Product ${product.name} has out of stock`);
+      }
+
+      if (cartItem.quantity > product.quantity) {
+        throw new BadRequestException(`Product ${product.name} does not enough`);
+
+      }
+    }
+
     // Create a Order
 
     const newOrder = await prisma.order.create({
@@ -50,6 +73,18 @@ class OrderService {
     await prisma.orderItem.createMany({
       data: orderItems
     })
+
+    // Decrement quantity of product
+    for (const cartItem of cart.cartItems) {
+      await prisma.product.update({
+        where: { id: cartItem.productId },
+        data: {
+          quantity: {
+            decrement: cartItem.quantity
+          }
+        }
+      })
+    }
 
     // Clear carts
     cartService.clear(cart.id, currentUser);
