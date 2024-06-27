@@ -63,6 +63,8 @@ class ProductService {
   }
 
   public async getOne(id: number): Promise<Product> {
+    await productCache.getProduct(`${REDIS_KEY.PRODUCTS}:${id}`);
+
     const product: Product | null = await prisma.product.findFirst({
       where: {
         id
@@ -80,6 +82,8 @@ class ProductService {
     if (!product) {
       throw new NotFoundException(`Product has ID: ${id} not found`);
     }
+
+    await productCache.saveProduct(`${REDIS_KEY.PRODUCTS}:${id}`, product);
 
     return product;
   }
