@@ -19,6 +19,7 @@ class ProductCache {
     await redisCache.client.SET(key, JSON.stringify(data), { EX: 5 * 60 });
   }
 
+
   public async getProduct(key: string) {
     const cachedProduct = await redisCache.client.HGETALL(key);
 

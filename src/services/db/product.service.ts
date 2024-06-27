@@ -106,6 +106,8 @@ class ProductService {
       }
     });
 
+    await productCache.invalidateProduct();
+
     return product;
   }
 
@@ -120,17 +122,21 @@ class ProductService {
     await prisma.product.delete({
       where: { id }
     })
+
+    await productCache.invalidateProduct();
   }
 
   public async getMyProduct(currentUser: UserPayload) {
-    const products = await prisma.user.findMany({
+    const productKey = `${REDIS_KEY.PRODUCTS}:${REDIS_KEY.USERS}:${currentUser.id}`;
+    await productCache.getProducts(productKey);
+
+    const products = await prisma.product.findMany({
       where: {
-        id: currentUser.id
-      },
-      include: {
-        products: true
+        shopId: currentUser.id
       }
     });
+
+    await productCache.saveProducts(productKey, products);
 
     return products
   }
