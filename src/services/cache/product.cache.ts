@@ -16,7 +16,7 @@ class ProductCache {
   }
 
   public async saveProducts(key: string, data: Product[]) {
-    await redisCache.client.SET(key, JSON.stringify(data));
+    await redisCache.client.SET(key, JSON.stringify(data), { EX: 5 * 60 });
   }
 }
 
