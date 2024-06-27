@@ -4,6 +4,7 @@ import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 import RedisCache from "../cache/redis.cache";
 import { REDIS_KEY } from "~/globals/constants/redis.keys";
+import { categoryCache } from "../cache/category.cache";
 
 const redisCache: RedisCache = new RedisCache();
 
@@ -18,18 +19,13 @@ class CategoryService {
     })
 
     // Invalidate data in redis
-    await redisCache.client.DEL(REDIS_KEY.CATEGORIES) // delete key in redis
+    await categoryCache.invalidate();
 
     return category;
   }
 
   public async read(): Promise<Category[]> {
-    const cachedCategories = await redisCache.client.GET(REDIS_KEY.CATEGORIES);
-
-    if (cachedCategories) {
-      console.log('This is a data from cached');
-      return JSON.parse(cachedCategories);
-    }
+    await categoryCache.getCategories();
 
     const categories: Category[] = await prisma.category.findMany({
       where: {
@@ -37,30 +33,13 @@ class CategoryService {
       }
     });
 
-    await redisCache.client.SET(REDIS_KEY.CATEGORIES, JSON.stringify(categories), {
-      EX: 60 * 60 * 60
-    });
+    await categoryCache.saveCategories(categories);
 
     return categories;
   }
 
   public async readOne(id: number): Promise<Category> {
-    const cachedCategory = await redisCache.client.HGETALL(`${REDIS_KEY.CATEGORIES}:${id}`);
-
-    const cachedCategoryObject = { ...cachedCategory };
-
-    if (Object.keys(cachedCategoryObject).length) {
-      console.log('cached category', cachedCategoryObject);
-
-      const dataToReturn = {
-        id: parseInt(cachedCategoryObject.id),
-        name: cachedCategoryObject.name,
-        icon: cachedCategoryObject.icon,
-        status: cachedCategoryObject.status === 'true'
-      } as Category
-
-      return dataToReturn;
-    }
+    await categoryCache.getCategory(id);
 
     const category = await prisma.category.findFirst({
       where: {
@@ -74,18 +53,7 @@ class CategoryService {
     }
 
     // Save data to redis
-
-    const dataToRedis = {
-      id: category.id.toString(),
-      name: category.name,
-      icon: category.icon,
-      status: category.status ? "true" : "false"
-    }
-
-    for (const [field, value] of Object.entries(dataToRedis)) {
-      await redisCache.client.HSET(`${REDIS_KEY.CATEGORIES}:${id}`, field, value)
-    }
-
+    categoryCache.saveCategory(category, id);
 
     return category;
 
@@ -109,7 +77,7 @@ class CategoryService {
     });
 
     // Invalidate data in redis
-    await redisCache.client.DEL(REDIS_KEY.CATEGORIES) // delete key in redis
+    await categoryCache.invalidate();
 
 
     return updatedCategory
@@ -127,7 +95,7 @@ class CategoryService {
     });
 
     // Invalidate data in redis
-    await redisCache.client.DEL(REDIS_KEY.CATEGORIES) // delete key in redis
+    await categoryCache.invalidate();
   }
 
   private async getCountCategory(id: number): Promise<number> {
