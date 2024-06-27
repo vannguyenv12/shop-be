@@ -3,6 +3,7 @@ import { ICategoryBody } from "~/features/category/interface/category.interface"
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
 import RedisCache from "../cache/redis.cache";
+import { REDIS_KEY } from "~/globals/constants/redis.keys";
 
 const redisCache: RedisCache = new RedisCache();
 
@@ -20,12 +21,7 @@ class CategoryService {
   }
 
   public async read(): Promise<Category[]> {
-    // Have you have a categories in redis?
-    // If yes, return it from a cache
-    // If no, fetch it in database
-    //     - Save it to redis
-
-    const cachedCategories = await redisCache.client.GET('categories');
+    const cachedCategories = await redisCache.client.GET(REDIS_KEY.CATEGORIES);
 
     if (cachedCategories) {
       console.log('This is a data from cached');
@@ -38,7 +34,9 @@ class CategoryService {
       }
     });
 
-    await redisCache.client.SET('categories', JSON.stringify(categories));
+    await redisCache.client.SET(REDIS_KEY.CATEGORIES, JSON.stringify(categories), {
+      EX: 60 * 60 * 60
+    });
 
     return categories;
   }
