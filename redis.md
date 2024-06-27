@@ -9,3 +9,6 @@ docker exec -it my-redis redis-cli
 
 # Check running redis
 docker ps
+
+# Remove redis container
+docker container rm my-redis

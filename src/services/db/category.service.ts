@@ -20,13 +20,25 @@ class CategoryService {
   }
 
   public async read(): Promise<Category[]> {
-    await redisCache.client.SET('key2', 'value2');
+    // Have you have a categories in redis?
+    // If yes, return it from a cache
+    // If no, fetch it in database
+    //     - Save it to redis
+
+    const cachedCategories = await redisCache.client.GET('categories');
+
+    if (cachedCategories) {
+      console.log('This is a data from cached');
+      return JSON.parse(cachedCategories);
+    }
 
     const categories: Category[] = await prisma.category.findMany({
       where: {
         status: true
       }
     });
+
+    await redisCache.client.SET('categories', JSON.stringify(categories));
 
     return categories;
   }
