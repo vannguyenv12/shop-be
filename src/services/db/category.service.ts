@@ -42,7 +42,7 @@ class CategoryService {
   }
 
   public async readOne(id: number): Promise<Category> {
-    const cachedCategory = await redisCache.client.HGETALL('category');
+    const cachedCategory = await redisCache.client.HGETALL(`categories:${id}`);
 
     const cachedCategoryObject = { ...cachedCategory };
 
@@ -80,7 +80,7 @@ class CategoryService {
     }
 
     for (const [field, value] of Object.entries(dataToRedis)) {
-      await redisCache.client.HSET('category', field, value)
+      await redisCache.client.HSET(`categories:${id}`, field, value)
     }
 
 
