@@ -17,6 +17,9 @@ class CategoryService {
       }
     })
 
+    // Invalidate data in redis
+    await redisCache.client.DEL(REDIS_KEY.CATEGORIES) // delete key in redis
+
     return category;
   }
 
@@ -42,7 +45,7 @@ class CategoryService {
   }
 
   public async readOne(id: number): Promise<Category> {
-    const cachedCategory = await redisCache.client.HGETALL(`categories:${id}`);
+    const cachedCategory = await redisCache.client.HGETALL(`${REDIS_KEY.CATEGORIES}:${id}`);
 
     const cachedCategoryObject = { ...cachedCategory };
 
@@ -80,7 +83,7 @@ class CategoryService {
     }
 
     for (const [field, value] of Object.entries(dataToRedis)) {
-      await redisCache.client.HSET(`categories:${id}`, field, value)
+      await redisCache.client.HSET(`${REDIS_KEY.CATEGORIES}:${id}`, field, value)
     }
 
 
@@ -105,6 +108,9 @@ class CategoryService {
       }
     });
 
+    // Invalidate data in redis
+    await redisCache.client.DEL(REDIS_KEY.CATEGORIES) // delete key in redis
+
 
     return updatedCategory
   }
@@ -119,6 +125,9 @@ class CategoryService {
         id,
       }
     });
+
+    // Invalidate data in redis
+    await redisCache.client.DEL(REDIS_KEY.CATEGORIES) // delete key in redis
   }
 
   private async getCountCategory(id: number): Promise<number> {
