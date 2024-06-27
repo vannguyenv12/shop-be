@@ -2,11 +2,7 @@ import { Category } from "@prisma/client";
 import { ICategoryBody } from "~/features/category/interface/category.interface";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
-import RedisCache from "../cache/redis.cache";
-import { REDIS_KEY } from "~/globals/constants/redis.keys";
 import { categoryCache } from "../cache/category.cache";
-
-const redisCache: RedisCache = new RedisCache();
 
 class CategoryService {
   public async add(requestBody: ICategoryBody): Promise<Category> {

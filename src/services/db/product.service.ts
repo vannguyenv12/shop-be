@@ -1,11 +1,13 @@
 import { Product } from "@prisma/client";
 import { Express } from "express";
 import { IProductBody } from "~/features/product/interface/product.interface";
+import { REDIS_KEY } from "~/globals/constants/redis.keys";
 import { UtilsConstant } from "~/globals/constants/utils";
 import { Helper } from "~/globals/helpers/helper";
 import { checkPermission } from "~/globals/middlewares/auth.middleware";
 import { NotFoundException } from "~/globals/middlewares/error.middleware";
 import { prisma } from "~/prisma";
+import { productCache } from "../cache/product.cache";
 
 class ProductService {
   public async add(requestBody: IProductBody, currentUser: UserPayload, mainImage: Express.Multer.File | undefined): Promise<Product> {
@@ -29,10 +31,16 @@ class ProductService {
     return products;
   }
 
-  public async getPagination(page: number = UtilsConstant.DEFAULT_PAGE, pageSize: number = UtilsConstant.DEFAULT_PAGE_SIZE,
-    sortBy: string = UtilsConstant.DEFAULT_SORT_BY, sortDir: string = UtilsConstant.DEFAULT_SORT_DIR,
+  public async getPagination(
+    page: number = UtilsConstant.DEFAULT_PAGE,
+    pageSize: number = UtilsConstant.DEFAULT_PAGE_SIZE,
+    sortBy: string = UtilsConstant.DEFAULT_SORT_BY,
+    sortDir: string = UtilsConstant.DEFAULT_SORT_DIR,
     where = {},
   ) {
+    const productKey = `${REDIS_KEY.PRODUCTS}:${page}:${pageSize}:${sortBy}:${sortDir}`;
+    await productCache.getProducts(productKey);
+
     // page 1, every page has 5 products
     const skip: number = (page - 1) * pageSize; // (3 - 1) * 10 = 20
     const take: number = pageSize;
@@ -45,6 +53,9 @@ class ProductService {
         [sortBy]: sortDir
       }
     });
+
+    // Save to redis
+    await productCache.saveProducts(productKey, products);
 
     return products;
   }
