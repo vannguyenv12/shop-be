@@ -18,6 +18,23 @@ class ProductCache {
   public async saveProducts(key: string, data: Product[]) {
     await redisCache.client.SET(key, JSON.stringify(data), { EX: 5 * 60 });
   }
+
+  public async invalidateProduct() {
+    const pattern = 'products:*';
+    const keys: string[] = [];
+
+    // GET all key match with pattern
+    for await (const key of redisCache.client.scanIterator({
+      MATCH: pattern,
+      COUNT: 100,
+    })) {
+      keys.push(key);
+    }
+
+    if (keys.length > 0) {
+      await redisCache.client.DEL(keys);
+    }
+  }
 }
 
 export const productCache: ProductCache = new ProductCache();

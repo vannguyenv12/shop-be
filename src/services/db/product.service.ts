@@ -23,6 +23,8 @@ class ProductService {
       }
     });
 
+    await productCache.invalidateProduct();
+
     return product;
   }
 
