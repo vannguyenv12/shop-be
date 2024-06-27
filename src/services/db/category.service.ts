@@ -42,6 +42,23 @@ class CategoryService {
   }
 
   public async readOne(id: number): Promise<Category> {
+    const cachedCategory = await redisCache.client.HGETALL('category');
+
+    const cachedCategoryObject = { ...cachedCategory };
+
+    if (Object.keys(cachedCategoryObject).length) {
+      console.log('cached category', cachedCategoryObject);
+
+      const dataToReturn = {
+        id: parseInt(cachedCategoryObject.id),
+        name: cachedCategoryObject.name,
+        icon: cachedCategoryObject.icon,
+        status: cachedCategoryObject.status === 'true'
+      } as Category
+
+      return dataToReturn;
+    }
+
     const category = await prisma.category.findFirst({
       where: {
         id,
@@ -52,6 +69,20 @@ class CategoryService {
     if (!category) {
       throw new NotFoundException(`Category with ID: ${id} not found`);
     }
+
+    // Save data to redis
+
+    const dataToRedis = {
+      id: category.id.toString(),
+      name: category.name,
+      icon: category.icon,
+      status: category.status ? "true" : "false"
+    }
+
+    for (const [field, value] of Object.entries(dataToRedis)) {
+      await redisCache.client.HSET('category', field, value)
+    }
+
 
     return category;
 
